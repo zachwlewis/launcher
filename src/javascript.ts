@@ -182,6 +182,9 @@ function buildArgumentNode(launchApp: LaunchApp, index: number): HTMLDivElement
   let label = document.createElement("label");
   label.htmlFor = `arg${index}`;
   label.textContent = argument.name;
+  if (argument.hasTooltip) {
+    label.setAttribute('title', `${argument.tooltip}`);
+  }
   
 
   // Build DOM structure based on the type of argument.

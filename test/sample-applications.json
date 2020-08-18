@@ -13,6 +13,7 @@
                 {
                     "name": "String Argument",
                     "type": "string",
+                    "tooltip": "A basic string argument using pre and post values to wrap the input for display.",
                     "pre": "--sample_string=\"",
                     "post": "\"",
                     "default": "Default Value"
@@ -20,6 +21,7 @@
                 {
                     "name": "Sample Boolean",
                     "type": "boolean",
+                    "tooltip": "A basic boolean argument displaying the boolean value as \"checked\" or \"unchecked\".",
                     "pre": "--sample_boolean=",
                     "values": ["unchecked", "checked"],
                     "default": false
@@ -27,6 +29,7 @@
                 {
                     "name": "Sample Number",
                     "type": "number",
+                    "tooltip": "A basic number argument with a range set to [0, 10].",
                     "range": [0, 10],
                     "step": 1,
                     "pre": "--sample_number=",
@@ -52,6 +55,7 @@
                 {
                     "name": "String Argument",
                     "type": "string",
+                    "tooltip": "A string argument that is ignored from output when the value is \"ignore\".",
                     "pre": "--sample_string=\"",
                     "post": "\"",
                     "ignoreIfMatches": "ignore",
@@ -60,6 +64,7 @@
                 {
                     "name": "Sample Boolean",
                     "type": "boolean",
+                    "tooltip": "A boolean argument that is ignored from output when the value is true.",
                     "pre": "--sample_boolean=",
                     "values": ["unchecked", "checked"],
                     "ignoreIfMatches": true,
@@ -68,6 +73,7 @@
                 {
                     "name": "Sample Number",
                     "type": "number",
+                    "tooltip": "A number argument that is ignored from output when the value is 69 (nice) or 420 (nice).",
                     "range": [0, 1000],
                     "step": 1,
                     "pre": "--sample_number=",

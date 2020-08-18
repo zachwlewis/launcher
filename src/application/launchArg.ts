@@ -20,6 +20,7 @@ export interface LaunchArgProps {
     pre?: string;
     post?: string;
     ignoreIfMatches?: LaunchArgValue | LaunchArgValue[];
+    tooltip?: string;
 }
 
 type LaunchArgStringProps = LaunchArgProps;
@@ -51,14 +52,22 @@ export abstract class LaunchArg {
     }
     /** The props defining the argument. Used for storage. */
     get props(): LaunchArgProps { return this._props; }
+    
     /** The human-readable name of the argument. */
     get name(): string { return this._props.name; }
+    
     /** The current value of the argument. */
     get value(): LaunchArgValue { return this._value; }
     set value(value: LaunchArgValue) { this._value = value; }
 
     get type(): LaunchArgType | string { return this._props.type; }
     get display(): LaunchArgDisplay | string { return this._props.display; }
+
+    /** The tooltip to display when hovering over the argument. */
+    get tooltip(): string { return this._props.tooltip; }
+
+    /** Does the argument have a tooltip to display? */
+    get hasTooltip(): boolean { return this.tooltip !== undefined && this.tooltip.length > 0; }
 
     /** The type to use for the argument's \<input\>. */
     get inputType(): string { return ""; };
@@ -116,6 +125,7 @@ const LaunchArgStringDefaults: LaunchArgStringProps = {
     display: LaunchArgDisplay.LAT_Shown,
     pre: '',
     post: '',
+    tooltip: '',
 }
 
 const LaunchArgBooleanDefaults: LaunchArgBooleanProps = {
@@ -125,7 +135,8 @@ const LaunchArgBooleanDefaults: LaunchArgBooleanProps = {
     display: LaunchArgDisplay.LAT_Shown,
     pre: '',
     post: '',
-    values: ['false', 'true']
+    values: ['false', 'true'],
+    tooltip: '',
 }
 
 const LaunchArgNumberDefaults: LaunchArgNumberProps = {
@@ -136,7 +147,8 @@ const LaunchArgNumberDefaults: LaunchArgNumberProps = {
     pre: '',
     post: '',
     range: null,
-    step: null
+    step: null,
+    tooltip: '',
 }
 
 export function constructLaunchArg(props: LaunchArgProps, value?: LaunchArgValue): LaunchArg {
