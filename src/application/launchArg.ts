@@ -19,6 +19,7 @@ export interface LaunchArgProps {
     display?: LaunchArgDisplay | string;
     pre?: string;
     post?: string;
+    ignoreIfMatches?: LaunchArgValue | LaunchArgValue[];
 }
 
 type LaunchArgStringProps = LaunchArgProps;
@@ -68,6 +69,19 @@ export abstract class LaunchArg {
     get stringValue(): string { return "Invalid"; }
     /** The argument string to be sent to the process. */
     toString(): string { return `${this.pre}${this.stringValue}${this.post}`; };
+
+    get shouldIgnore(): boolean {
+        // The argument should be ignored if its empty.
+        if (this.toString().length == 0) return true;
+
+        // If ignoreIfMatches isn't defined, don't ignore it.
+        if (this.props.ignoreIfMatches === undefined) return false;
+
+        let matches: LaunchArgValue[] = [];
+        matches = matches.concat(this.props.ignoreIfMatches);
+
+        return matches.includes(this.value);
+    }
 }
 
 class LaunchArgString extends LaunchArg {
@@ -83,6 +97,16 @@ class LaunchArgBoolean extends LaunchArg {
 class LaunchArgNumber extends LaunchArg {
     get inputType(): string { return 'number'; }
     get stringValue(): string { return (this.value as string); }
+    get value(): LaunchArgValue { return (this._value as number); }
+    set value(value: LaunchArgValue) {
+        if (typeof value === "string") this._value = parseFloat(value);
+        else if (typeof value === "number") this._value = value;
+        else if (typeof value === "boolean") this._value = value ? 1 : 0;
+
+        if (typeof this._value !== "number" || isNaN(this._value)) {
+            this._value = this._props.default;
+        }
+    }
 }
 
 const LaunchArgStringDefaults: LaunchArgStringProps = {

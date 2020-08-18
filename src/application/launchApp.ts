@@ -40,10 +40,14 @@ export class LaunchApp {
         console.log("Launch String:", this.argString);
     }
 
-    /** An array of arguments, with the executable path as arg[0]. */
+    /**
+     * An array of arguments, with the executable path as arg[0].
+     */
     get argArray(): string[] {
         let value: string[] = [this._props.executablePath];
-        for (const ar of this._args) value.push(ar.toString());
+        for (const ar of this._args) {
+            value.push(ar.shouldIgnore ? "" : ar.toString());
+        }
         return value;
     }
 

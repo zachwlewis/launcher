@@ -54,6 +54,7 @@
                     "type": "string",
                     "pre": "--sample_string=\"",
                     "post": "\"",
+                    "ignoreIfMatches": "ignore",
                     "default": "Default Value"
                 },
                 {
@@ -61,14 +62,16 @@
                     "type": "boolean",
                     "pre": "--sample_boolean=",
                     "values": ["unchecked", "checked"],
+                    "ignoreIfMatches": true,
                     "default": false
                 },
                 {
                     "name": "Sample Number",
                     "type": "number",
-                    "range": [0, 10],
+                    "range": [0, 1000],
                     "step": 1,
                     "pre": "--sample_number=",
+                    "ignoreIfMatches": [69, 420],
                     "default": 0
                 },
                 {
