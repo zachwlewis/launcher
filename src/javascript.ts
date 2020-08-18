@@ -55,6 +55,14 @@ console_size_toggle.addEventListener('click', () => {
   setConsoleVisibility(consoleVisibility == 'expanded' ? 'collapsed': 'expanded');
 });
 
+command_txt.addEventListener("copy", (event) => {
+  const selection = document.getSelection();
+    event.clipboardData.setData('text/plain', selection.toString()
+      .replace(/‑/g, '-')
+      .replace(/\u200B/g, ''));
+    event.preventDefault();
+});
+
 function loadApps(): void {
   let appsConfigPath = store.get("appsConfigPath");
   
