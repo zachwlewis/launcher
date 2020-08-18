@@ -1,0 +1,222 @@
+:root {
+  --sidebar-bg-color: #272730;
+  --sidebar-hover-bg-color: #30303b;
+  --sidebar-selected-bg-color: #08082b;
+  --sidebar-selected-hover-bg-color: #08082b;
+  --main-bg-color: #1c1c1f;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  margin: 0;
+  padding: 0;
+}
+
+#wrapper {
+  display: flex;
+  flex-direction: column-reverse;
+  align-content: flex-end;
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+}
+
+section#main {
+  flex: 1 1 auto;
+  display: flex;
+  order: 1;
+  overflow: auto;
+}
+
+.header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 60px;
+  display: flex;
+  position: sticky;
+}
+
+/* Right Pane: Applications Area */
+
+#applications {
+  flex: 0 0 200px;
+  background-color: var(--sidebar-bg-color);
+  color: rgba(255, 255, 255, 0.8);
+  overflow-y: auto;
+}
+
+h1 {
+  padding: 8px;
+  font-size: 24px;
+  margin: auto 0;
+}
+
+#applications-list .app {
+  cursor: pointer;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+}
+
+#applications-list .app.selected { background-color: var(--sidebar-selected-bg-color); }
+#applications-list .app.selected:hover { background-color: var(--sidebar-selected-hover-bg-color); }
+#applications-list .app:hover { background-color: var(--sidebar-hover-bg-color); }
+
+#applications-list .app h2 {
+  font-size: 14px;
+  font-weight: 400;
+  flex: auto;
+  margin: 0;
+}
+
+#applications-list .app i {
+  flex: 0;
+}
+
+/* Left Pane: Arguments */
+
+#arguments {
+  padding: 0;
+  flex: 1 1 auto;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--main-bg-color);
+  color: rgba(255, 255, 255, 0.8);
+  overflow-y: auto;
+}
+
+#application-arguments {
+  display: flex;
+  flex-wrap: wrap;
+  justify-items: right;
+  margin: 5px;
+}
+
+button {
+  outline: none;
+  cursor: pointer;
+}
+
+.argument {
+  margin: 5px;
+}
+
+.argument.text {
+  flex: 1 0 calc(100% - 20px);
+}
+
+.argument.checkbox {
+  flex: 1 0 150px;
+}
+
+#argument-header button {
+  padding: 10px;
+  margin: 5px;
+  align-self: center;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.8);
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+input[type="text"] {
+  padding: 5px;
+  display: block;
+  width: calc(100% - 10px);
+  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.8);
+  outline: none;
+  margin-top: 5px;
+}
+
+input[type="text"]:focus {
+  display: block;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.9);
+}
+
+.highlight-icon {
+  margin-left: 8px;
+  opacity: 0.3;
+}
+
+.highlight-icon:hover {
+  opacity: 0.6;
+}
+
+.tiny-btn {
+  color: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.tiny-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255,255,255,0.8);
+}
+
+/* Output Console Display */
+section#output {
+  flex: none;
+  order: 0;
+  display: flex;
+  position:relative;
+  background-color: var(--main-bg-color);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto;
+  line-height: 1.6em;
+}
+
+#console-size-toggle {
+  flex: 0;
+  align-self: baseline;
+  margin-top: auto;
+}
+
+.output {
+  flex: 1 1 auto;
+  font-family: "Cascadia Mono", "Dank Mono", "Consolas", monospace;
+  color: #D4D4D4;
+  margin: 5px;
+  margin-right: 0;
+}
+
+.output.prompt {
+  flex: 0;
+  opacity: 0.6;
+  -webkit-user-select: none;
+}
+
+.output.collapsed {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.output .arg {
+  padding-left: 2px;
+  padding-right: 2px;
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.00);
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.output .arg.empty {
+  margin-left: 8px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.output .arg.highlighted {
+  color: rgba(255, 255, 255, 1);
+  background-color: rgba(255, 255, 255, 0.1);
+}

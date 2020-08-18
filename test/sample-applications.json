@@ -1,0 +1,82 @@
+{
+    "applications": [
+        {
+            "name": "Sample One",
+            "path": "C:\\path\\to\\sample\\one.exe",
+            "args": [
+                {
+                    "name": "Hidden Argument",
+                    "type": "string",
+                    "default": "--not_visible_in_launcher",
+                    "display": "hidden"
+                },
+                {
+                    "name": "String Argument",
+                    "type": "string",
+                    "pre": "--sample_string=\"",
+                    "post": "\"",
+                    "default": "Default Value"
+                },
+                {
+                    "name": "Sample Boolean",
+                    "type": "boolean",
+                    "pre": "--sample_boolean=",
+                    "values": ["unchecked", "checked"],
+                    "default": false
+                },
+                {
+                    "name": "Sample Number",
+                    "type": "number",
+                    "range": [0, 10],
+                    "step": 1,
+                    "pre": "--sample_number=",
+                    "default": 0
+                },
+                {
+                    "name": "Additional Arguments",
+                    "type": "string",
+                    "default": ""
+                }
+            ]
+        },
+        {
+            "name": "Sample Two",
+            "path": "C:\\path\\to\\sample\\two.exe",
+            "args": [
+                {
+                    "name": "Hidden Argument",
+                    "type": "string",
+                    "default": "--not_visible_in_launcher",
+                    "display": "hidden"
+                },
+                {
+                    "name": "String Argument",
+                    "type": "string",
+                    "pre": "--sample_string=\"",
+                    "post": "\"",
+                    "default": "Default Value"
+                },
+                {
+                    "name": "Sample Boolean",
+                    "type": "boolean",
+                    "pre": "--sample_boolean=",
+                    "values": ["unchecked", "checked"],
+                    "default": false
+                },
+                {
+                    "name": "Sample Number",
+                    "type": "number",
+                    "range": [0, 10],
+                    "step": 1,
+                    "pre": "--sample_number=",
+                    "default": 0
+                },
+                {
+                    "name": "Additional Arguments",
+                    "type": "string",
+                    "default": ""
+                }
+            ]
+        }
+    ]
+}
