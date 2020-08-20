@@ -1,37 +1,55 @@
-enum LaunchArgType {
-    LAT_String = "string",
-    LAT_Boolean = "boolean",
-    LAT_Number = "number",
+/** The type of the argument. */
+export enum LaunchArgType {
+    String = "string",
+    Boolean = "boolean",
+    Number = "number",
+    Option = "option",
 }
 
-enum LaunchArgDisplay {
-    LAT_Shown = "default",
-    LAT_Hidden = "hidden",
-    LAT_Const = "const",
+/** The way the argument should be displayed. */
+export enum LaunchArgDisplay {
+    Default = "default",
+    Hidden = "hidden",
+    Constant = "const",
 }
 
 export type LaunchArgValue =  string | boolean | number;
 
 export interface LaunchArgProps {
+    /** Display Name */
     name: string;
-    type: LaunchArgType | string;
+    /** Argument Type */
+    type: LaunchArgType;
+    /** Default Value */
     default?: LaunchArgValue;
-    display?: LaunchArgDisplay | string;
+    /** Display Type */
+    display?: LaunchArgDisplay;
+    /** Text to prepend to the value. */
     pre?: string;
+    /** Text to append to the value. */
     post?: string;
+    /** Ignore the argument if the value matches. */
     ignoreIfMatches?: LaunchArgValue | LaunchArgValue[];
+    /** Additional information about the argument. */
     tooltip?: string;
 }
 
 type LaunchArgStringProps = LaunchArgProps;
 
 interface LaunchArgBooleanProps extends LaunchArgProps {
-    values?: string[];
+    /** Values when false and true. */
+    values?: [string, string];
 }
 
 interface LaunchArgNumberProps extends LaunchArgProps {
+    /** Minimum and maximum values of the number. */
     range?: [number, number];
+    /** Amount to increment the value. */
     step?: number;
+}
+
+export interface LaunchArgOptionProps extends LaunchArgProps {
+    options?: [string, string][];
 }
 
 
@@ -118,11 +136,28 @@ class LaunchArgNumber extends LaunchArg {
     }
 }
 
+export class LaunchArgOption extends LaunchArg {
+    get inputType(): string { return 'select'; }
+    get value(): LaunchArgValue { return this._value as number; }
+    get stringValue(): string {
+        return (this.props as LaunchArgOptionProps).options[this._value as number][1];
+    }
+    set value(value: LaunchArgValue) {
+        if (typeof value === "string") this._value = parseFloat(value);
+        else if (typeof value === "number") this._value = value;
+        else if (typeof value === "boolean") this._value = value ? 1 : 0;
+
+        if (typeof this._value !== "number" || isNaN(this._value)) {
+            this._value = this._props.default;
+        }
+    }
+}
+
 const LaunchArgStringDefaults: LaunchArgStringProps = {
     name: 'String Argument',
-    type: LaunchArgType.LAT_String,
+    type: LaunchArgType.String,
     default: '',
-    display: LaunchArgDisplay.LAT_Shown,
+    display: LaunchArgDisplay.Default,
     pre: '',
     post: '',
     tooltip: '',
@@ -130,9 +165,9 @@ const LaunchArgStringDefaults: LaunchArgStringProps = {
 
 const LaunchArgBooleanDefaults: LaunchArgBooleanProps = {
     name: 'Boolean Argument',
-    type: LaunchArgType.LAT_Boolean,
+    type: LaunchArgType.Boolean,
     default: false,
-    display: LaunchArgDisplay.LAT_Shown,
+    display: LaunchArgDisplay.Default,
     pre: '',
     post: '',
     values: ['false', 'true'],
@@ -141,9 +176,9 @@ const LaunchArgBooleanDefaults: LaunchArgBooleanProps = {
 
 const LaunchArgNumberDefaults: LaunchArgNumberProps = {
     name: 'Numeric Argument',
-    type: LaunchArgType.LAT_Number,
+    type: LaunchArgType.Number,
     default: '',
-    display: LaunchArgDisplay.LAT_Shown,
+    display: LaunchArgDisplay.Default,
     pre: '',
     post: '',
     range: null,
@@ -151,12 +186,27 @@ const LaunchArgNumberDefaults: LaunchArgNumberProps = {
     tooltip: '',
 }
 
+const LaunchArgOptionDefaults: LaunchArgOptionProps = {
+    name: 'Option Argument',
+    type: LaunchArgType.Option,
+    default: 0,
+    display: LaunchArgDisplay.Default,
+    pre: '',
+    post: '',
+    options: [["",""]],
+    tooltip: '',
+}
+
 export function constructLaunchArg(props: LaunchArgProps, value?: LaunchArgValue): LaunchArg {
-    if (props.type == LaunchArgType.LAT_String)
+    console.log("Constructing arg:", props, value);
+    if (props.type == LaunchArgType.String)
         return new LaunchArgString({...LaunchArgStringDefaults, ...props}, value);
-    if (props.type == LaunchArgType.LAT_Boolean)
+    if (props.type == LaunchArgType.Boolean)
         return new LaunchArgBoolean({...LaunchArgBooleanDefaults, ...props}, value);
-    if (props.type == LaunchArgType.LAT_Number)
+    if (props.type == LaunchArgType.Number)
         return new LaunchArgNumber({...LaunchArgNumberDefaults, ...props}, value);
+    if (props.type === LaunchArgType.Option)
+        return new LaunchArgOption({...LaunchArgOptionDefaults, ...props}, value);
+
     return null;
 }

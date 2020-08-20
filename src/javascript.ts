@@ -2,7 +2,7 @@ import { ipcRenderer, app } from 'electron';
 import { Store } from './store';
 import * as fs from 'fs';
 import { LaunchApp } from './application/launchApp';
-import { LaunchArg, LaunchArgValue } from './application/launchArg';
+import { LaunchArg, LaunchArgOptionProps, LaunchArgValue, LaunchArgType, LaunchArgDisplay } from './application/launchArg';
 
 const store = new Store({
   // We'll call our data file 'user-preferences'
@@ -83,12 +83,15 @@ function loadApps(): void {
   {
     let launchApp: LaunchApp = new LaunchApp({name: o.name, executablePath: o.path});
 
+
+
     for (const a of o.args)
     {
       launchApp.addLaunchArg(a);
     }
 
     launchApp.debugPrint();
+    console.log(launchApp);
     loadedApps.push(launchApp);
   }
 
@@ -170,53 +173,88 @@ function buildArgumentNode(launchApp: LaunchApp, index: number): HTMLDivElement
 {
   const argument: LaunchArg = launchApp.args[index];
   
-  if (argument.display == 'hidden') { return null; }
+  if (argument.display === LaunchArgDisplay.Hidden) { return null; }
   
+  // All arguments are inside their own div.
   let el = document.createElement("div");
   el.className = `argument`;
   el.classList.add(argument.inputType);
-  let input = document.createElement("input");
-  input.name = argument.name;
-  input.id = `arg${index}`;
-  input.type = argument.inputType;
+
+  // All arguments have a label.
   let label = document.createElement("label");
   label.htmlFor = `arg${index}`;
   label.textContent = argument.name;
   if (argument.hasTooltip) {
     label.setAttribute('title', `${argument.tooltip}`);
   }
-  
 
-  // Build DOM structure based on the type of argument.
-  switch (argument.type)
+  if (argument.type === LaunchArgType.Option)
   {
-    case "boolean":
-      input.defaultChecked = argument.value as boolean;
-      input.addEventListener('click', () => {
-        updateArgument(index, input.checked);
-      });
-      el.appendChild(input);
-      el.appendChild(label);
-      break;
-    case "string":
-      input.value = argument.value as string;
-      input.addEventListener('input', () => {
-        updateArgument(index, input.value);
-      });
-      el.appendChild(label);
-      el.appendChild(document.createElement("br"));
-      el.appendChild(input);
-      break;
-    case "number":
-      input.value = argument.value.toString();
-      input.addEventListener('input', () => {
-        updateArgument(index, input.value);
-      });
-      el.appendChild(label);
-      el.appendChild(document.createElement("br"));
-      el.appendChild(input);
-    default:
-      break;
+    // Option types are composed of multiple items.
+    let select = document.createElement("select");
+    select.name = argument.name;
+    select.id = `arg${index}`;
+
+    select.addEventListener('change', () => {
+      updateArgument(index, select.selectedIndex);
+    });
+
+    // Build the options.
+    const options = (argument.props as LaunchArgOptionProps).options;
+    for (let i = 0; i < options.length; ++i)
+    {
+      let option = document.createElement("option");
+      option.value = i.toString();
+      option.innerText = options[i][0];
+      select.appendChild(option);
+    }
+
+    select.selectedIndex = argument.value as number;
+    el.appendChild(label);
+    el.appendChild(document.createElement('br'));
+    el.appendChild(select);
+  }
+  else
+  {
+    // The other types just have a single <input>
+    let input = document.createElement("input");
+    input.name = argument.name;
+    input.id = `arg${index}`;
+    input.type = argument.inputType;
+    
+    // Build DOM structure based on the type of argument.
+    switch (argument.type)
+    {
+      case LaunchArgType.Boolean:
+        input.defaultChecked = argument.value as boolean;
+        input.addEventListener('click', () => {
+          updateArgument(index, input.checked);
+        });
+        el.appendChild(input);
+        el.appendChild(label);
+        break;
+      case LaunchArgType.String:
+        input.value = argument.value as string;
+        input.addEventListener('input', () => {
+          updateArgument(index, input.value);
+        });
+        el.appendChild(label);
+        el.appendChild(document.createElement("br"));
+        el.appendChild(input);
+        break;
+      case LaunchArgType.Number:
+        input.value = argument.value.toString();
+        input.addEventListener('input', () => {
+          updateArgument(index, input.value);
+        });
+        el.appendChild(label);
+        el.appendChild(document.createElement("br"));
+        el.appendChild(input);
+        break;
+      default:
+        break;
+    }
+  
   }
 
   let hoverArea = document.createElement("i");

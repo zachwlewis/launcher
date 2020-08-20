@@ -59,7 +59,19 @@ export class LaunchApp {
         return value;
     }
 
-    addLaunchArg(argProps: LaunchArgProps, value?: LaunchArgValue): void {
-        this._args.push(constructLaunchArg(argProps, value));
+    /**
+     * Adds a new argument to the application.
+     * @param argProps 
+     * @param value 
+     * @returns Was the addition successful?
+     */
+    addLaunchArg(argProps: LaunchArgProps, value?: LaunchArgValue): boolean {
+        let newArg = constructLaunchArg(argProps, value);
+        if (newArg !== null) {
+            this._args.push(newArg);
+            return true;
+        }
+        
+        return false;
     }
 }

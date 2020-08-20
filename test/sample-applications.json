@@ -23,7 +23,10 @@
                     "type": "boolean",
                     "tooltip": "A basic boolean argument displaying the boolean value as \"checked\" or \"unchecked\".",
                     "pre": "--sample_boolean=",
-                    "values": ["unchecked", "checked"],
+                    "values": [
+                        "unchecked",
+                        "checked"
+                    ],
                     "default": false
                 },
                 {
@@ -33,6 +36,30 @@
                     "range": [0, 10],
                     "step": 1,
                     "pre": "--sample_number=",
+                    "default": 0
+                },
+                {
+                    "name": "Dropdown",
+                    "type": "option",
+                    "tooltip": "A basic dropdown.",
+                    "options": [
+                        ["Item One","value1"],
+                        ["Item Two","value2"],
+                        ["Item Three","value3"]
+                    ],
+                    "pre": "--sample_dropdown=",
+                    "default": 0
+                },
+                {
+                    "name": "Radio",
+                    "type": "option",
+                    "tooltip": "A basic radio selection.",
+                    "options": [
+                        ["Item One","value1"],
+                        ["Item Two","value2"],
+                        ["Item Three","value3"]
+                    ],
+                    "pre": "--sample_radio=",
                     "default": 0
                 },
                 {
