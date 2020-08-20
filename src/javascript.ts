@@ -48,7 +48,7 @@ drag_region.ondrop = (e) => {
 launch_btn.addEventListener('click' , () => {
   console.log(`Launching ${currentApp.name}`);
   console.log(currentApp.argString);
-  ipcRenderer.send('spawn', currentApp.argArray);
+  ipcRenderer.send('launch', currentApp.argArray);
 });
 
 console_size_toggle.addEventListener('click', () => {
@@ -126,7 +126,7 @@ function buildApplicationNode(app: LaunchApp, index: number, selected: boolean =
     // Prevent the click from also selecting the item.
     ev.stopPropagation();
     console.log(`Quick-launching [${index}] ${app.name}`);
-    ipcRenderer.send('spawn', app.argArray);
+    ipcRenderer.send('launch', app.argArray);
   });
 
   el.appendChild(label);

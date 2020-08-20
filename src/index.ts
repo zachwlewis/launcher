@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain, shell, Menu, MenuItem } from 'electron';
-import { spawn, spawnSync, execSync, execFileSync } from 'child_process';
+import { exec } from 'child_process';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -51,23 +51,20 @@ app.on('activate', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 
-ipcMain.on('spawn', (event, args: string[]) => {
+ipcMain.on('launch', (event, args: string[]) => {
+  
   if (process.platform === "darwin") {
     // Not designed for Mac, but want to build and test.
     console.log(`Launch => ${args.join(' ')}`);
     return;
   }
-  
-  let path = args[0];
-  let parameters = args.slice(1);
-  
-  console.log("Launching process:", path, parameters);
 
-  const subprocess = spawn(path, parameters, {
-    detached: true,
-    stdio: 'inherit'
-  });
+  // #TODO: Provide support for launching scripts in a desired shell.
+  console.log(`exec(${args.join(' ')})`);
+  const child = exec(args.join(' '));
 
+  // #TODO: Consider maintaining a reference to the process to quit later if desired.
+  child.unref();
 
 });
 
