@@ -1,0 +1,30 @@
+.argument-list {
+  margin: 0;
+  padding: 0;
+}
+
+.argument-list li {
+  display: flex;
+  margin: 5px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.argument-list li.error {
+  font-family: "Cascadia Mono";
+  background: red;
+  color: white;
+}
+
+.argument-list li.selected {
+  background-color: yellow;
+}
+
+.argument-list li > label {
+  flex: 1;
+}
+
+.argument-list li > input:type[checkbox] {
+  flex: 0;
+}
+

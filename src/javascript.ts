@@ -32,48 +32,64 @@ if (apps.length > 0) {selectApp(0);}
 let currentApp: LaunchApp;
 let highlightedArgumentIndex: number = -1;
 
-drag_region.ondragover = () => { return false; };
-drag_region.ondragleave = () => { return false; };
-drag_region.ondragend = () => { return false; };
-drag_region.ondrop = (e) => {
-  e.preventDefault();
-  let filePath = e.dataTransfer.files[0].path
-  console.log(filePath);
-  store.set("appsConfigPath", filePath);
-  loadApps();
-  drawApps();
-  return false;
-};
+if (drag_region) {
+  drag_region.ondragover = () => { return false; };
+  drag_region.ondragleave = () => { return false; };
+  drag_region.ondragend = () => { return false; };
+  drag_region.ondrop = (e) => {
+    e.preventDefault();
+    let filePath = '';
+    if (e.dataTransfer) {
+      filePath = e.dataTransfer.files[0].path;
+    }
+    
+    console.log(filePath);
+    store.set("appsConfigPath", filePath);
+    loadApps();
+    drawApps();
+    return false;
+  };
+}
 
-launch_btn.addEventListener('click' , () => {
-  console.log(`Launching ${currentApp.name}`);
-  console.log(currentApp.argString);
-  ipcRenderer.send('launch', currentApp.argArray);
-});
+if(launch_btn) {
+  launch_btn.addEventListener('click' , () => {
+    console.log(`Launching ${currentApp.name}`);
+    console.log(currentApp.argString);
+    ipcRenderer.send('launch', currentApp.argArray);
+  });
+}
+if (console_size_toggle) {
+  console_size_toggle.addEventListener('click', () => {
+    setConsoleVisibility(consoleVisibility == 'expanded' ? 'collapsed': 'expanded');
+  });
+}
 
-console_size_toggle.addEventListener('click', () => {
-  setConsoleVisibility(consoleVisibility == 'expanded' ? 'collapsed': 'expanded');
-});
+if (command_txt) {
+  command_txt.addEventListener("copy", (event) => {
+    const selection = document.getSelection();
 
-command_txt.addEventListener("copy", (event) => {
-  const selection = document.getSelection();
-    event.clipboardData.setData('text/plain', selection.toString()
-      .replace(/‑/g, '-')
-      .replace(/\u200B/g, ''));
+    if (event.clipboardData) {
+      event.clipboardData.setData('text/plain', (selection || '').toString()
+        .replace(/‑/g, '-')
+        .replace(/\u200B/g, ''));
+    }
+    
     event.preventDefault();
-});
+  });
+}
+
 
 function loadApps(): void {
   let appsConfigPath = store.get("appsConfigPath");
   
   if (appsConfigPath == undefined ||appsConfigPath.length == 0) {
     console.log("Applications file not set.");
-    return null;
+    return;
   }
 
   if (!fs.existsSync(appsConfigPath)) {
     console.log(`Applications file missing. Expected file at "${appsConfigPath}".`);
-    return null;
+    return;
   }
 
   let raw: any = JSON.parse(fs.readFileSync(appsConfigPath).toString());
@@ -138,6 +154,8 @@ function buildApplicationNode(app: LaunchApp, index: number, selected: boolean =
 function drawApps(): void
 {
   // Clear all children in the Applications list.
+  if (!applications_pane) return;
+
   while (applications_pane.lastChild) {
     applications_pane.removeChild(applications_pane.lastChild);
   }
@@ -151,25 +169,28 @@ function drawApps(): void
 function selectApp(index: number): void
 {
   currentApp = apps[index];
-  title.textContent = currentApp.name;
+  if (title)
+    title.textContent = currentApp.name;
   
   ipcRenderer.send('updateTitle', currentApp.name);
   console.log(`Process ${index} selected.`);
-  while (profile_content.lastElementChild) {
-    profile_content.removeChild(profile_content.lastElementChild);
-  }
+  if (profile_content) {
+    while (profile_content.lastElementChild) {
+      profile_content.removeChild(profile_content.lastElementChild);
+    }
 
-  for (let i = 0; i < currentApp.args.length; ++i)
-  {
-    let el = buildArgumentNode(currentApp, i);
-    if (el != null) profile_content.appendChild(el);
+    for (let i = 0; i < currentApp.args.length; ++i)
+    {
+      let el = buildArgumentNode(currentApp, i);
+      if (el != null) profile_content.appendChild(el);
+    }
   }
 
   drawApps();
   renderArguments(currentApp.argArray);
 }
 
-function buildArgumentNode(launchApp: LaunchApp, index: number): HTMLDivElement
+function buildArgumentNode(launchApp: LaunchApp, index: number): HTMLDivElement | null
 {
   const argument: LaunchArg = launchApp.args[index];
   
@@ -275,6 +296,9 @@ function updateArgument(index: number, value: LaunchArgValue) {
 }
 
 function renderArguments(args: string[], index?: number): void {
+  
+  if (!command_txt) return;
+
   let command = "";
 
   if (index != null) highlightedArgumentIndex = index;
@@ -302,7 +326,7 @@ function renderArguments(args: string[], index?: number): void {
 
 function setConsoleVisibility(visibility: ConsoleVisibilityMode): void {
   consoleVisibility = visibility;
-
+  if (!(console_size_toggle && command_txt)) return;
   switch (visibility) {
     case 'collapsed':
       console_size_toggle.className = `fas fa-expand-alt tiny-btn`;

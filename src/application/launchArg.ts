@@ -38,7 +38,7 @@ type LaunchArgStringProps = LaunchArgProps;
 
 interface LaunchArgBooleanProps extends LaunchArgProps {
     /** Values when false and true. */
-    values?: [string, string];
+    values: [string, string];
 }
 
 interface LaunchArgNumberProps extends LaunchArgProps {
@@ -49,7 +49,7 @@ interface LaunchArgNumberProps extends LaunchArgProps {
 }
 
 export interface LaunchArgOptionProps extends LaunchArgProps {
-    options?: [string, string][];
+    options: [string, string][];
 }
 
 
@@ -63,7 +63,7 @@ export abstract class LaunchArg {
     constructor(def: LaunchArgProps, value?: LaunchArgValue) {
         this._props = def;
         if (value == null) {
-            this._value = def.default;
+            this._value = def.default !== undefined ? def.default : '';
         } else {
             this._value = value;
         }
@@ -79,10 +79,10 @@ export abstract class LaunchArg {
     set value(value: LaunchArgValue) { this._value = value; }
 
     get type(): LaunchArgType | string { return this._props.type; }
-    get display(): LaunchArgDisplay | string { return this._props.display; }
+    get display(): LaunchArgDisplay { return this._props.display || LaunchArgDisplay.Default; }
 
     /** The tooltip to display when hovering over the argument. */
-    get tooltip(): string { return this._props.tooltip; }
+    get tooltip(): string { return this._props.tooltip || ''; }
 
     /** Does the argument have a tooltip to display? */
     get hasTooltip(): boolean { return this.tooltip !== undefined && this.tooltip.length > 0; }
@@ -118,7 +118,10 @@ class LaunchArgString extends LaunchArg {
 
 class LaunchArgBoolean extends LaunchArg {
     get inputType(): string { return 'checkbox'; }
-    get stringValue(): string { return (this._props as LaunchArgBooleanProps).values[(this.value as boolean) ? 1 : 0]; }
+    get stringValue(): string {
+        const vs = (this._props as LaunchArgBooleanProps).values || ['false', 'true'];
+        return vs[(this.value as boolean) ? 1 : 0];
+    }
 }
 
 class LaunchArgNumber extends LaunchArg {
@@ -131,7 +134,7 @@ class LaunchArgNumber extends LaunchArg {
         else if (typeof value === "boolean") this._value = value ? 1 : 0;
 
         if (typeof this._value !== "number" || isNaN(this._value)) {
-            this._value = this._props.default;
+            this._value = this._props.default || 0;
         }
     }
 }
@@ -139,17 +142,20 @@ class LaunchArgNumber extends LaunchArg {
 export class LaunchArgOption extends LaunchArg {
     get inputType(): string { return 'select'; }
     get value(): LaunchArgValue { return this._value as number; }
-    get stringValue(): string {
-        return (this.props as LaunchArgOptionProps).options[this._value as number][1];
-    }
     set value(value: LaunchArgValue) {
         if (typeof value === "string") this._value = parseFloat(value);
         else if (typeof value === "number") this._value = value;
         else if (typeof value === "boolean") this._value = value ? 1 : 0;
 
         if (typeof this._value !== "number" || isNaN(this._value)) {
-            this._value = this._props.default;
+            this._value = this._props.default || 0;
         }
+    }
+
+    get stringValue(): string {
+        let index = this.value as number;
+        console.log(index);
+        return (this.props as LaunchArgOptionProps).options[this.value as number][1];
     }
 }
 
@@ -181,8 +187,8 @@ const LaunchArgNumberDefaults: LaunchArgNumberProps = {
     display: LaunchArgDisplay.Default,
     pre: '',
     post: '',
-    range: null,
-    step: null,
+    range: [0, 0],
+    step: 1,
     tooltip: '',
 }
 
@@ -193,11 +199,11 @@ const LaunchArgOptionDefaults: LaunchArgOptionProps = {
     display: LaunchArgDisplay.Default,
     pre: '',
     post: '',
-    options: [["",""]],
+    options: [['','']],
     tooltip: '',
 }
 
-export function constructLaunchArg(props: LaunchArgProps, value?: LaunchArgValue): LaunchArg {
+export function constructLaunchArg(props: LaunchArgProps, value?: LaunchArgValue): LaunchArg | null {
     console.log("Constructing arg:", props, value);
     if (props.type == LaunchArgType.String)
         return new LaunchArgString({...LaunchArgStringDefaults, ...props}, value);

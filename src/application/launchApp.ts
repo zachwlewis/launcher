@@ -27,12 +27,14 @@ export class LaunchApp {
 
     debugPrint(): void {
         console.log(`Launch Application: ${this._props.name}`);
+        console.log(this);
         let argIndex = 0;
         console.log(`[${argIndex++}] ${this._props.executablePath}`);
 
         for (const ar of this._args)
         {
-            console.log(`[${argIndex++}] ${ar.name}: ${ar.toString()}`);
+            console.log(ar);
+            console.log(`[${argIndex++}] (${ar.type})${ar.name}: ${ar.toString()}`);
         }
 
         console.log(this.argArray);
@@ -71,7 +73,7 @@ export class LaunchApp {
             this._args.push(newArg);
             return true;
         }
-        
+
         return false;
     }
 }
