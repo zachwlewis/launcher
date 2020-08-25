@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import { Console } from './components/console';
 import { ApplicationList } from './components/applicationList'
 import { ArgumentList } from './components/argumentList'
+import {Messages} from './components/messages'
 
 import * as CT from './launcher-core/coreTypes'
 
@@ -76,10 +77,10 @@ const appProps: CT.AppDefinition[] = [
 				value: '',
 				pre: '--arg3.1=',
 				options: [
-					{name: 'Option 1', value: 'value1'},
-					{name: 'Option 2', value: 'value2'},
-					{name: 'Option 3', value: 'value3'},
-					{name: 'Option 4', value: 'She said "hey."'},
+					{ name: 'Option 1', value: 'value1' },
+					{ name: 'Option 2', value: 'value2' },
+					{ name: 'Option 3', value: 'value3' },
+					{ name: 'Option 4', value: 'She said "hey."' },
 				]
 			},
 			{
@@ -101,6 +102,8 @@ const appProps: CT.AppDefinition[] = [
 	},
 ]
 
+type MessageErrorLevel = 'info'|'warning'|'error';
+
 type LauncherProps = {
 	apps: CT.AppDefinition[];
 }
@@ -110,10 +113,12 @@ type LauncherState = {
 	selected: number;
 	apps: {
 		selected: boolean;
-		values: Array<string|boolean|number>;
+		values: Array<string | boolean | number>;
 	}[]
 	/** The argument index to highlight. */
 	peek: number;
+	/** Messages currently visible to the user. */
+	messages: Array<[string, MessageErrorLevel]>;
 }
 
 class Launcher extends Component<LauncherProps, LauncherState> {
@@ -124,12 +129,14 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 			return {
 				selected: index === 0,
 				values: app.args.map((arg) => arg.value)
-		}});
+			}
+		});
 		this.state = {
-			defs:props.apps,
+			defs: props.apps,
 			selected: 0,
 			apps: appState,
-			peek: -1
+			peek: -1,
+			messages: []
 		};
 	}
 
@@ -138,29 +145,44 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 			return {
 				selected: idx === index,
 				values: app.values
-		}});
+			}
+		});
 
+		// Message testing
+		this.addMessage(`${this.state.defs[index].app.name} selected.`);
 		this.setState({ selected: index, apps: s });
 	}
 
-	handleArgChange(value: string|boolean|number, index: number): void {
+	handleArgChange(value: string | boolean | number, index: number): void {
 		let s = this.state.apps;
 		s[this.state.selected].values[index] = value;
-		this.setState({apps: s});
+		this.setState({ apps: s });
 	}
 
 	handleArgPeek(index: number): void {
-		const peekIndex = index < 0 ? -1 : index+1;
-		this.setState({peek: peekIndex});
+		const peekIndex = index < 0 ? -1 : index + 1;
+		this.setState({ peek: peekIndex });
 	}
 
 	handleLaunchClick(): void {
 		const output = this.selectedOutput;
+		this.addMessage(output.join(' ').trim().replace(/\s{2,}/g, ' '), 'error');
 		ipcRenderer.send('launch', output);
 	}
 
+	addMessage(message: string, type:MessageErrorLevel = 'info'): void {
+		let m = this.state.messages;
+		m.push([message, type]);
+		this.setState({messages:m});
+	}
+
+	removeMessage(index: number): void {
+		let m = this.state.messages.filter((msg, idx) => idx !== index);
+		this.setState({messages: m});
+	}
+
 	get selectedApp(): CT.AppDefinition { return this.props.apps[this.state.selected]; }
-	get selectedArgs(): (string|boolean|number)[] {
+	get selectedArgs(): (string | boolean | number)[] {
 		return this.state.apps[this.state.selected].values;
 	}
 
@@ -169,27 +191,27 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 		const args = this.selectedApp.args.map((arg, index) => {
 			let svalue: string;
 			let ignored = false;
-			switch(arg.type) {
+			switch (arg.type) {
 				case 'string':
 					svalue = values[index] as string || arg.value;
 					// If every match is null, the value doesn't exist in the ignored list.
-					ignored = (arg.ignored||[]).find((m) => svalue.match(m) !== null) !== undefined;
+					ignored = (arg.ignored || []).find((m) => svalue.match(m) !== null) !== undefined;
 					break;
 				case 'number':
-					const v = (values[index] as number||arg.value);
-					svalue = v.toString(arg.radix||10);
+					const v = (values[index] as number || arg.value);
+					svalue = v.toString(arg.radix || 10);
 					// If the value is included in the ignored list, it should be ignored.
-					ignored = (arg.ignored||[]).includes(v);
+					ignored = (arg.ignored || []).includes(v);
 					break;
 				case 'boolean':
 					svalue = (values[index] as boolean) ? arg.true : arg.false;
 					break;
 				case 'option':
-					svalue = (values[index] as string||arg.value);
+					svalue = (values[index] as string || arg.value);
 					break;
 			}
 
-			return ignored ? '' : `${arg.pre||''}${svalue}${arg.post||''}`;
+			return ignored ? '' : `${arg.pre || ''}${svalue}${arg.post || ''}`;
 		});
 
 		return [this.selectedApp.app.path].concat(args);
@@ -199,11 +221,13 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 		const appDefs = this.props.apps.map<CT.App>((app) => app.app);
 		return (
 			<div>
-				<ApplicationList
-					definitions={appDefs}
-					selected={this.state.selected}
-					onApplicationSelected={(index) => { this.handleApplicationSelection(index); }}
-				/>
+				<section>
+					<ApplicationList
+						definitions={appDefs}
+						selected={this.state.selected}
+						onApplicationSelected={(index) => { this.handleApplicationSelection(index); }}
+					/>
+				</section>
 				<section>
 					<nav>
 						<h1>{this.selectedApp.app.name}</h1>
@@ -216,7 +240,10 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 						onArgPeek={(index) => this.handleArgPeek(index)}
 					/>
 				</section>
-				<Console args={this.selectedOutput} selected={this.state.peek} expanded={false} />
+				<section>
+					<Console args={this.selectedOutput} selected={this.state.peek} expanded={false} />
+				</section>
+				<Messages messages={this.state.messages} onMessageDismissed={(index) => this.removeMessage(index)} />
 			</div>
 		);
 	}

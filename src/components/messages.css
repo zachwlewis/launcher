@@ -1,0 +1,35 @@
+.messages {
+  margin: 0;
+  padding: 0;
+}
+
+.messages li {
+  display: flex;
+  margin: 5px;
+  padding: 5px;
+}
+
+.messages li.error {
+  font-family: "Cascadia Mono";
+  background: red;
+  color: white;
+}
+
+.messages li.warning {
+  font-family: "Cascadia Mono";
+  background: yellow;
+}
+
+.messages li.info {
+  font-family: "Cascadia Mono";
+  background: gainsboro;
+}
+
+.messages li > span {
+  flex: 1;
+}
+
+.messages li > button {
+  flex: 0;
+}
+
