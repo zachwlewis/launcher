@@ -45,13 +45,17 @@ const appProps: CT.AppDefinition[] = [
 				name: 'Arg 2.1',
 				type: 'number',
 				value: 0,
-				pre: '--arg2.1='
+				pre: '--arg2.1=',
+				ignored: [69, 420],
+				tooltip: 'Ignored if the value is nice.'
 			},
 			{
 				name: 'Arg 2.2',
 				type: 'string',
 				value: '',
-				pre: '--arg2.2='
+				pre: '--arg2.2=',
+				tooltip: `Ignored if the value is nice, starts with ice or repeats 'a' just twice.`,
+				ignored: ['nice', /^ice/, /(?:^|[^a])aa(?!a)/]
 			},
 			{
 				name: 'Arg 2.3',
@@ -163,13 +167,19 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 	get selectedOutput(): Array<string> {
 		const values = this.selectedArgs;
 		const args = this.selectedApp.args.map((arg, index) => {
-			let svalue = '';
+			let svalue: string;
+			let ignored = false;
 			switch(arg.type) {
 				case 'string':
 					svalue = values[index] as string || arg.value;
+					// If every match is null, the value doesn't exist in the ignored list.
+					ignored = (arg.ignored||[]).find((m) => svalue.match(m) !== null) !== undefined;
 					break;
 				case 'number':
-					svalue = (values[index] as number||arg.value).toString(arg.radix||10);
+					const v = (values[index] as number||arg.value);
+					svalue = v.toString(arg.radix||10);
+					// If the value is included in the ignored list, it should be ignored.
+					ignored = (arg.ignored||[]).includes(v);
 					break;
 				case 'boolean':
 					svalue = (values[index] as boolean) ? arg.true : arg.false;
@@ -179,7 +189,7 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 					break;
 			}
 
-			return `${arg.pre||''}${svalue}${arg.post||''}`;
+			return ignored ? '' : `${arg.pre||''}${svalue}${arg.post||''}`;
 		});
 
 		return [this.selectedApp.app.path].concat(args);

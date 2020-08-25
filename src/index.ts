@@ -52,16 +52,19 @@ app.on('activate', () => {
 // code. You can also put them in separate files and import them here.
 
 ipcMain.on('launch', (event, args: string[]) => {
+  // #TODO: Do we want to support lots of spaces in arguments?
+  // Probably, right?
+  const launchString = args.join(' ').trim().replace(/\s{2,}/g, ' ');
   
   if (process.platform === "darwin") {
     // Not designed for Mac, but want to build and test.
-    console.log(`Launch => ${args.join(' ')}`);
+    console.log(`Launch => ${launchString}`);
     return;
   }
 
   // #TODO: Provide support for launching scripts in a desired shell.
-  console.log(`exec(${args.join(' ')})`);
-  const child = exec(args.join(' '));
+  console.log(`exec(${launchString})`);
+  const child = exec(launchString);
 
   // #TODO: Consider maintaining a reference to the process to quit later if desired.
   child.unref();

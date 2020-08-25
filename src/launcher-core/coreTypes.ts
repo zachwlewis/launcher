@@ -14,6 +14,8 @@ interface Arg {
 export interface StringArg extends Arg {
   type: 'string';
   value: string;
+  /** A list of values that cause the entire argument to be ignored. */
+  ignored?: Array<string|RegExp>
 }
 
 /** Boolean Argument */
@@ -32,6 +34,8 @@ export interface NumberArg extends Arg {
   maximum?: number;
   step?: number;
   radix?: number;
+  /** A list of values that cause the entire argument to be ignored. */
+  ignored?: Array<number>;
 }
 
 type Option = {
