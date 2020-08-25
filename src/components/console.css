@@ -1,3 +1,7 @@
 code.console {
   font-family: "Cascadia Mono";
 }
+
+.peek {
+  background-color: yellow;
+}

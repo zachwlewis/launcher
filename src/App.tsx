@@ -1,35 +1,19 @@
 import { ipcRenderer } from 'electron';
 
-import React, { Component, FunctionComponent } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 import { Console } from './components/console';
 import { ApplicationList } from './components/applicationList'
 import { ArgumentList } from './components/argumentList'
 
-import { LA, LAProps } from './launcher-core/la'
-import { AArgProps, AArgState } from './launcher-core/aarg'
-import * as AT from './launcher-core/argTypes'
+import * as CT from './launcher-core/coreTypes'
 
 import './App.css'
 
-type Applications = Array<{
-	name: string;
-	args: Array<{
-		name: string;
-		type: string;
-	}>;
-}>;
-
-/** Launch Application Definition */
-type LAD = {
-	la: LAProps;
-	args: AT.AnyArg[];
-}
-
-const appProps: LAD[] = [
+const appProps: CT.AppDefinition[] = [
 	{
-		la: { name: 'App One', path: '/path/one' },
+		app: { name: 'App One', path: '/path/one' },
 		args: [
 			{
 				name: 'Arg 1.1',
@@ -55,7 +39,7 @@ const appProps: LAD[] = [
 		]
 	},
 	{
-		la: { name: 'App Two', path: '/path/two' },
+		app: { name: 'App Two', path: '/path/two' },
 		args: [
 			{
 				name: 'Arg 2.1',
@@ -80,7 +64,7 @@ const appProps: LAD[] = [
 		]
 	},
 	{
-		la: { name: 'App Three', path: '/path/three' },
+		app: { name: 'App Three', path: '/path/three' },
 		args: [
 			{
 				name: 'Arg 3.1',
@@ -114,16 +98,18 @@ const appProps: LAD[] = [
 ]
 
 type LauncherProps = {
-	apps: LAD[];
+	apps: CT.AppDefinition[];
 }
 
 type LauncherState = {
-	readonly defs: LAD[];
+	readonly defs: CT.AppDefinition[];
 	selected: number;
 	apps: {
 		selected: boolean;
 		values: Array<string|boolean|number>;
 	}[]
+	/** The argument index to highlight. */
+	peek: number;
 }
 
 class Launcher extends Component<LauncherProps, LauncherState> {
@@ -138,7 +124,8 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 		this.state = {
 			defs:props.apps,
 			selected: 0,
-			apps: appState
+			apps: appState,
+			peek: -1
 		};
 	}
 
@@ -158,12 +145,17 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 		this.setState({apps: s});
 	}
 
+	handleArgPeek(index: number): void {
+		const peekIndex = index < 0 ? -1 : index+1;
+		this.setState({peek: peekIndex});
+	}
+
 	handleLaunchClick(): void {
 		const output = this.selectedOutput;
 		ipcRenderer.send('launch', output);
 	}
 
-	get selectedApp(): LAD { return this.props.apps[this.state.selected]; }
+	get selectedApp(): CT.AppDefinition { return this.props.apps[this.state.selected]; }
 	get selectedArgs(): (string|boolean|number)[] {
 		return this.state.apps[this.state.selected].values;
 	}
@@ -190,11 +182,11 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 			return `${arg.pre||''}${svalue}${arg.post||''}`;
 		});
 
-		return [this.selectedApp.la.path].concat(args);
+		return [this.selectedApp.app.path].concat(args);
 	}
 
 	render() {
-		const appDefs = this.props.apps.map<LAProps>((app) => app.la);
+		const appDefs = this.props.apps.map<CT.App>((app) => app.app);
 		return (
 			<div>
 				<ApplicationList
@@ -204,16 +196,17 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 				/>
 				<section>
 					<nav>
-						<h1>{this.selectedApp.la.name}</h1>
+						<h1>{this.selectedApp.app.name}</h1>
 						<button onClick={() => this.handleLaunchClick()}>Launch</button>
 					</nav>
 					<ArgumentList
 						definitions={this.selectedApp.args}
 						values={this.selectedArgs}
 						onArgChange={(value, index) => this.handleArgChange(value, index)}
+						onArgPeek={(index) => this.handleArgPeek(index)}
 					/>
 				</section>
-				<Console args={this.selectedOutput} selected={-1} expanded={false} />
+				<Console args={this.selectedOutput} selected={this.state.peek} expanded={false} />
 			</div>
 		);
 	}

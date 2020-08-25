@@ -1,18 +1,18 @@
-import React, { Component, FunctionComponent, ChangeEvent } from 'react'
-import { LA } from '../launcher-core/la'
-import { AArg, AArgState } from '../launcher-core/aarg'
+import React, { Component } from 'react'
 import { StringArgumentItem } from './stringArgumentItem';
 import { BooleanArgumentItem } from './booleanArgumentItem';
 import { IntArgumentItem } from './intArgumentItem';
 import { OptionArgumentItem } from './optionArgumentItem';
-import * as AT from '../launcher-core/argTypes'
+import { ArgumentLabel } from './argumentLabel';
+import * as AT from '../launcher-core/coreTypes'
 
 import './argumentList.css'
 
 type ApplicationListProps = {
 	definitions: AT.AnyArg[];
-	values: (string|number|boolean)[];
-	onArgChange: (value: string|number|boolean, index: number) => void;
+	values: (string | number | boolean)[];
+	onArgChange: (value: string | number | boolean, index: number) => void;
+	onArgPeek: (index: number) => void;
 };
 
 export class ArgumentList extends Component<ApplicationListProps> {
@@ -21,45 +21,69 @@ export class ArgumentList extends Component<ApplicationListProps> {
 		super(props);
 	}
 
-	buildStringArgumentItem(arg: AT.StringArg, index: number): JSX.Element { return (
-		<StringArgumentItem
-				definition={arg}
-				key={index}
-				value={this.props.values[index] as string || ''}
-				id={`arg${index}`}
-				onValueChange={(value) => this.props.onArgChange(value, index)}
-		/>
-	);}
+	handlePeek(index: number): void {
+		this.props.onArgPeek(index);
+	}
 
-	buildBooleanArgumentItem(arg: AT.BooleanArg, index: number): JSX.Element { return (
-		<BooleanArgumentItem
-				definition={arg}
-				key={index}
-				value={this.props.values[index] as boolean || false}
-				id={`arg${index}`}
-				onValueChange={(value) => this.props.onArgChange(value, index)}
-		/>
-	);}
+	buildStringArgumentItem(arg: AT.StringArg, index: number): JSX.Element {
+		const k = `arg${index}`;
+		return (
+			<li key={k}>
+				<ArgumentLabel for={k} definition={arg} onStartPeek={() => this.handlePeek(index)} onEndPeek={() => this.handlePeek(-1)} />
+				<StringArgumentItem
+					definition={arg}
+					value={this.props.values[index] as string || ''}
+					id={k}
+					onValueChange={(value) => this.props.onArgChange(value, index)}
+				/>
+			</li>
+		);
+	}
 
-	buildIntArgumentItem(arg: AT.NumberArg, index: number): JSX.Element { return (
-		<IntArgumentItem
-				definition={arg}
-				key={index}
-				value={this.props.values[index] as number || 0}
-				id={`arg${index}`}
-				onValueChange={(value) => this.props.onArgChange(value, index)}
-		/>
-	);}
+	buildBooleanArgumentItem(arg: AT.BooleanArg, index: number): JSX.Element {
+		const k = `arg${index}`;
+		return (
+			<li key={k}>
+				<BooleanArgumentItem
+					definition={arg}
+					value={this.props.values[index] as boolean || false}
+					id={`arg${index}`}
+					onValueChange={(value) => this.props.onArgChange(value, index)}
+				/>
+				<ArgumentLabel for={k} definition={arg} onStartPeek={() => this.handlePeek(index)} onEndPeek={() => this.handlePeek(-1)} />
+			</li>
+		);
+	}
 
-	buildOptionArgumentItem(arg: AT.OptionArg, index: number): JSX.Element { return (
-		<OptionArgumentItem
-				definition={arg}
-				key={index}
-				value={this.props.values[index] as string || ''}
-				id={`arg${index}`}
-				onValueChange={(value) => this.props.onArgChange(value, index)}
-		/>
-	);}
+	buildIntArgumentItem(arg: AT.NumberArg, index: number): JSX.Element {
+		const k = `arg${index}`;
+		return (
+			<li key={k}>
+				<ArgumentLabel for={k} definition={arg} onStartPeek={() => this.handlePeek(index)} onEndPeek={() => this.handlePeek(-1)} />
+				<IntArgumentItem
+					definition={arg}
+					value={this.props.values[index] as number || 0}
+					id={`arg${index}`}
+					onValueChange={(value) => this.props.onArgChange(value, index)}
+				/>
+			</li>
+		);
+	}
+
+	buildOptionArgumentItem(arg: AT.OptionArg, index: number): JSX.Element {
+		const k = `arg${index}`;
+		return (
+			<li key={k}>
+				<ArgumentLabel for={k} definition={arg} onStartPeek={() => this.handlePeek(index)} onEndPeek={() => this.handlePeek(-1)} />
+				<OptionArgumentItem
+					definition={arg}
+					value={this.props.values[index] as string || ''}
+					id={`arg${index}`}
+					onValueChange={(value) => this.props.onArgChange(value, index)}
+				/>
+			</li>
+		);
+	}
 
 	makeArgumentItem(arg: AT.AnyArg, index: number): JSX.Element {
 		switch (arg.type) {

@@ -1,12 +1,11 @@
 import React, {Component} from 'react'
-import {LA, LAProps} from '../launcher-core/la'
-import {AArgProps} from '../launcher-core/aarg'
 import {ApplicationListItem} from './applicationListItem'
+import * as CT from '../launcher-core/coreTypes'
 
 import './applicationList.css'
 
 type ApplicationListProps = {
-	definitions: LAProps[];
+	definitions: CT.App[];
 	selected: number;
 	onApplicationSelected: (n: number) => void;
 }

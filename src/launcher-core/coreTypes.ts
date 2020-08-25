@@ -5,7 +5,9 @@ interface Arg {
   /** Text prepended to the argument. */
   pre?: string;
   /** Text appended to the argument. */
-	post?: string;
+  post?: string;
+  /** Additional information about the argument. */
+  tooltip?: string;
 }
 
 /** String Argument */
@@ -45,3 +47,15 @@ export interface OptionArg extends Arg {
 }
 
 export type AnyArg = StringArg | BooleanArg | NumberArg | OptionArg;
+
+export type App = {
+  /** Application display name. */
+  name: string;
+  /** Executable path. */
+  path: string;
+};
+
+export type AppDefinition = {
+  app: App;
+  args: AnyArg[];
+};
