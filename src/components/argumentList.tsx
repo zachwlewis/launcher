@@ -4,13 +4,15 @@ import { AArg, AArgState } from '../launcher-core/aarg'
 import { StringArgumentItem } from './stringArgumentItem';
 import { BooleanArgumentItem } from './booleanArgumentItem';
 import { IntArgumentItem } from './intArgumentItem';
+import { OptionArgumentItem } from './optionArgumentItem';
+import * as AT from '../launcher-core/argTypes'
 
 import './argumentList.css'
 
 type ApplicationListProps = {
-	args: AArg[];
-	values: string[];
-	onArgChange: (value: string, index: number) => void;
+	definitions: AT.AnyArg[];
+	values: (string|number|boolean)[];
+	onArgChange: (value: string|number|boolean, index: number) => void;
 };
 
 export class ArgumentList extends Component<ApplicationListProps> {
@@ -19,48 +21,59 @@ export class ArgumentList extends Component<ApplicationListProps> {
 		super(props);
 	}
 
-	buildStringArgumentItem(arg: AArg, index: number): JSX.Element { return (
+	buildStringArgumentItem(arg: AT.StringArg, index: number): JSX.Element { return (
 		<StringArgumentItem
-				arg={arg}
+				definition={arg}
 				key={index}
-				value={this.props.values[index]}
+				value={this.props.values[index] as string || ''}
 				id={`arg${index}`}
 				onValueChange={(value) => this.props.onArgChange(value, index)}
 		/>
 	);}
 
-	buildBooleanArgumentItem(arg: AArg, index: number): JSX.Element { return (
+	buildBooleanArgumentItem(arg: AT.BooleanArg, index: number): JSX.Element { return (
 		<BooleanArgumentItem
-				arg={arg}
+				definition={arg}
 				key={index}
-				value={this.props.values[index]}
+				value={this.props.values[index] as boolean || false}
 				id={`arg${index}`}
 				onValueChange={(value) => this.props.onArgChange(value, index)}
 		/>
 	);}
 
-	buildIntArgumentItem(arg: AArg, index: number): JSX.Element { return (
+	buildIntArgumentItem(arg: AT.NumberArg, index: number): JSX.Element { return (
 		<IntArgumentItem
-				arg={arg}
+				definition={arg}
 				key={index}
-				value={this.props.values[index]}
+				value={this.props.values[index] as number || 0}
 				id={`arg${index}`}
 				onValueChange={(value) => this.props.onArgChange(value, index)}
 		/>
 	);}
 
-	makeArgumentItem(arg: AArg, index: number): JSX.Element {
+	buildOptionArgumentItem(arg: AT.OptionArg, index: number): JSX.Element { return (
+		<OptionArgumentItem
+				definition={arg}
+				key={index}
+				value={this.props.values[index] as string || ''}
+				id={`arg${index}`}
+				onValueChange={(value) => this.props.onArgChange(value, index)}
+		/>
+	);}
+
+	makeArgumentItem(arg: AT.AnyArg, index: number): JSX.Element {
 		switch (arg.type) {
 			case 'string': return this.buildStringArgumentItem(arg, index);
-			case 'int': return this.buildIntArgumentItem(arg, index);
-			case 'bool': return this.buildBooleanArgumentItem(arg, index);
+			case 'number': return this.buildIntArgumentItem(arg, index);
+			case 'boolean': return this.buildBooleanArgumentItem(arg, index);
+			case 'option': return this.buildOptionArgumentItem(arg, index);
 		}
-		return <li key={index} className="error">[{arg.name}] ArgError: Type "{arg.type}" is invalid.</li>
+		//return <li key={index} className="error">[{arg.name}] ArgError: Type "{arg.type}" is invalid.</li>
 	}
 
 	render() {
 
-		const listItems = this.props.args.map((arg, index) => this.makeArgumentItem(arg, index));
+		const listItems = this.props.definitions.map((arg, index) => this.makeArgumentItem(arg, index));
 
 		return (
 			<ol className="argument-list">{listItems}</ol>

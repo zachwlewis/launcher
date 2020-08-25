@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
-import {LA} from '../launcher-core/la'
+import {LA, LAProps} from '../launcher-core/la'
 import {AArgProps} from '../launcher-core/aarg'
 import {ApplicationListItem} from './applicationListItem'
 
 import './applicationList.css'
 
 type ApplicationListProps = {
-	apps: LA[];
+	definitions: LAProps[];
 	selected: number;
 	onApplicationSelected: (n: number) => void;
 }
@@ -17,7 +17,7 @@ export class ApplicationList extends Component<ApplicationListProps> {
 	}
 
 	render() {
-		let listItems = this.props.apps.map((app, index) =>
+		let listItems = this.props.definitions.map((app, index) =>
 		<ApplicationListItem
 			key={index}
 			name={app.name}

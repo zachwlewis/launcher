@@ -1,33 +1,27 @@
 import React, { FunctionComponent, Component, ChangeEvent } from 'react'
 import { LA } from '../launcher-core/la'
 import { AArg } from '../launcher-core/aarg'
+import * as AT from '../launcher-core/argTypes'
 
 type BooleanArgumentItemProps = {
 	id: string;
-	arg: AArg;
-	value: string;
-	onValueChange: (value: string) => void;
+	definition: AT.BooleanArg;
+	value: boolean;
+	onValueChange: (value: boolean) => void;
 }
 
-export const BooleanArgumentItem: FunctionComponent<BooleanArgumentItemProps> = ({ id, arg, value, onValueChange }) => {
+export const BooleanArgumentItem: FunctionComponent<BooleanArgumentItemProps> = ({ id, definition, value, onValueChange }) => {
 	let content: JSX.Element;
-	if (arg.options.length !== 2) {
-		return (
-			<li className="error">[{arg.name}] ArgError: Incorrect number of options. (Expected 2, found {arg.options.length}.)</li>
-		);
-	}
-
 	return (
 		<li>  
 			<input
 				id={id}
 				type="checkbox"
-				checked={value === arg.options[1]}
-				ref={el => el && (el.indeterminate = !arg.options.includes(value))}
+				checked={value}
 				onChange={(event) => {
-					onValueChange(arg.options[event.target.checked === true ? 1: 0]);}}
+					onValueChange(event.target.checked);}}
 			/>
-			<label htmlFor={id} title={arg.name}>{arg.name} <i>Peek</i></label>
+			<label htmlFor={id} title={definition.name}>{definition.name} <i>Peek</i></label>
 		</li>
 		
 	);
