@@ -7,6 +7,7 @@ import { Console } from './components/console';
 import { ApplicationList } from './components/applicationList';
 import { ArgumentList } from './components/argumentList';
 import { Messages } from './components/messages';
+import { DragArea } from './components/dragArea';
 
 import * as CT from './launcher-core/coreTypes';
 
@@ -226,6 +227,12 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     return [this.selectedApp.app.path].concat(args);
   }
 
+  handleFilesDropped(paths: string[]): void {
+    for (const p of paths) {
+      this.addMessage(`Dropped ${p}`);
+    }
+  }
+
   render() {
     const appDefs = this.props.apps.map<CT.App>((app) => app.app);
     return (
@@ -237,6 +244,9 @@ class Launcher extends Component<LauncherProps, LauncherState> {
             onApplicationSelected={(index) => {
               this.handleApplicationSelection(index);
             }}
+          />
+          <DragArea
+            onFilesDropped={(paths) => this.handleFilesDropped(paths)}
           />
         </section>
         <section>
