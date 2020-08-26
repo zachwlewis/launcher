@@ -11,7 +11,7 @@
 }
 
 .argument-list li.error {
-  font-family: "Cascadia Mono";
+  font-family: 'Cascadia Mono';
   background: red;
   color: white;
 }
@@ -27,4 +27,3 @@
 .argument-list li > input:type[checkbox] {
   flex: 0;
 }
-

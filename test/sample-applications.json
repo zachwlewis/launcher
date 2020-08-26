@@ -1,118 +1,115 @@
 {
-    "applications": [
+  "applications": [
+    {
+      "name": "Sample One",
+      "path": "C:\\path\\to\\sample\\one.exe",
+      "args": [
         {
-            "name": "Sample One",
-            "path": "C:\\path\\to\\sample\\one.exe",
-            "args": [
-                {
-                    "name": "Hidden Argument",
-                    "type": "string",
-                    "default": "--not_visible_in_launcher",
-                    "display": "hidden"
-                },
-                {
-                    "name": "String Argument",
-                    "type": "string",
-                    "tooltip": "A basic string argument using pre and post values to wrap the input for display.",
-                    "pre": "--sample_string=\"",
-                    "post": "\"",
-                    "default": "Default Value"
-                },
-                {
-                    "name": "Sample Boolean",
-                    "type": "boolean",
-                    "tooltip": "A basic boolean argument displaying the boolean value as \"checked\" or \"unchecked\".",
-                    "pre": "--sample_boolean=",
-                    "values": [
-                        "unchecked",
-                        "checked"
-                    ],
-                    "default": false
-                },
-                {
-                    "name": "Sample Number",
-                    "type": "number",
-                    "tooltip": "A basic number argument with a range set to [0, 10].",
-                    "range": [0, 10],
-                    "step": 1,
-                    "pre": "--sample_number=",
-                    "default": 0
-                },
-                {
-                    "name": "Dropdown",
-                    "type": "option",
-                    "tooltip": "A basic dropdown.",
-                    "options": [
-                        ["Item One","value1"],
-                        ["Item Two","value2"],
-                        ["Item Three","value3"]
-                    ],
-                    "pre": "--sample_dropdown=",
-                    "default": 0
-                },
-                {
-                    "name": "Radio",
-                    "type": "option",
-                    "tooltip": "A basic radio selection.",
-                    "options": [
-                        ["Item One","value1"],
-                        ["Item Two","value2"],
-                        ["Item Three","value3"]
-                    ],
-                    "pre": "--sample_radio=",
-                    "default": 0
-                },
-                {
-                    "name": "Additional Arguments",
-                    "type": "string",
-                    "default": ""
-                }
-            ]
+          "name": "Hidden Argument",
+          "type": "string",
+          "default": "--not_visible_in_launcher",
+          "display": "hidden"
         },
         {
-            "name": "Sample Two",
-            "path": "C:\\path\\to\\sample\\two.exe",
-            "args": [
-                {
-                    "name": "Hidden Argument",
-                    "type": "string",
-                    "default": "--not_visible_in_launcher",
-                    "display": "hidden"
-                },
-                {
-                    "name": "String Argument",
-                    "type": "string",
-                    "tooltip": "A string argument that is ignored from output when the value is \"ignore\".",
-                    "pre": "--sample_string=\"",
-                    "post": "\"",
-                    "ignoreIfMatches": "ignore",
-                    "default": "Default Value"
-                },
-                {
-                    "name": "Sample Boolean",
-                    "type": "boolean",
-                    "tooltip": "A boolean argument that is ignored from output when the value is true.",
-                    "pre": "--sample_boolean=",
-                    "values": ["unchecked", "checked"],
-                    "ignoreIfMatches": true,
-                    "default": false
-                },
-                {
-                    "name": "Sample Number",
-                    "type": "number",
-                    "tooltip": "A number argument that is ignored from output when the value is 69 (nice) or 420 (nice).",
-                    "range": [0, 1000],
-                    "step": 1,
-                    "pre": "--sample_number=",
-                    "ignoreIfMatches": [69, 420],
-                    "default": 0
-                },
-                {
-                    "name": "Additional Arguments",
-                    "type": "string",
-                    "default": ""
-                }
-            ]
+          "name": "String Argument",
+          "type": "string",
+          "tooltip": "A basic string argument using pre and post values to wrap the input for display.",
+          "pre": "--sample_string=\"",
+          "post": "\"",
+          "default": "Default Value"
+        },
+        {
+          "name": "Sample Boolean",
+          "type": "boolean",
+          "tooltip": "A basic boolean argument displaying the boolean value as \"checked\" or \"unchecked\".",
+          "pre": "--sample_boolean=",
+          "values": ["unchecked", "checked"],
+          "default": false
+        },
+        {
+          "name": "Sample Number",
+          "type": "number",
+          "tooltip": "A basic number argument with a range set to [0, 10].",
+          "range": [0, 10],
+          "step": 1,
+          "pre": "--sample_number=",
+          "default": 0
+        },
+        {
+          "name": "Dropdown",
+          "type": "option",
+          "tooltip": "A basic dropdown.",
+          "options": [
+            ["Item One", "value1"],
+            ["Item Two", "value2"],
+            ["Item Three", "value3"]
+          ],
+          "pre": "--sample_dropdown=",
+          "default": 0
+        },
+        {
+          "name": "Radio",
+          "type": "option",
+          "tooltip": "A basic radio selection.",
+          "options": [
+            ["Item One", "value1"],
+            ["Item Two", "value2"],
+            ["Item Three", "value3"]
+          ],
+          "pre": "--sample_radio=",
+          "default": 0
+        },
+        {
+          "name": "Additional Arguments",
+          "type": "string",
+          "default": ""
         }
-    ]
+      ]
+    },
+    {
+      "name": "Sample Two",
+      "path": "C:\\path\\to\\sample\\two.exe",
+      "args": [
+        {
+          "name": "Hidden Argument",
+          "type": "string",
+          "default": "--not_visible_in_launcher",
+          "display": "hidden"
+        },
+        {
+          "name": "String Argument",
+          "type": "string",
+          "tooltip": "A string argument that is ignored from output when the value is \"ignore\".",
+          "pre": "--sample_string=\"",
+          "post": "\"",
+          "ignoreIfMatches": "ignore",
+          "default": "Default Value"
+        },
+        {
+          "name": "Sample Boolean",
+          "type": "boolean",
+          "tooltip": "A boolean argument that is ignored from output when the value is true.",
+          "pre": "--sample_boolean=",
+          "values": ["unchecked", "checked"],
+          "ignoreIfMatches": true,
+          "default": false
+        },
+        {
+          "name": "Sample Number",
+          "type": "number",
+          "tooltip": "A number argument that is ignored from output when the value is 69 (nice) or 420 (nice).",
+          "range": [0, 1000],
+          "step": 1,
+          "pre": "--sample_number=",
+          "ignoreIfMatches": [69, 420],
+          "default": 0
+        },
+        {
+          "name": "Additional Arguments",
+          "type": "string",
+          "default": ""
+        }
+      ]
+    }
+  ]
 }

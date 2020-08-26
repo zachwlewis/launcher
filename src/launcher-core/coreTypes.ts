@@ -1,7 +1,7 @@
 /** Shared Argument Properties */
 interface Arg {
   /** Display name. */
-	name: string;
+  name: string;
   /** Text prepended to the argument. */
   pre?: string;
   /** Text appended to the argument. */
@@ -15,7 +15,7 @@ export interface StringArg extends Arg {
   type: 'string';
   value: string;
   /** A list of values that cause the entire argument to be ignored. */
-  ignored?: Array<string|RegExp>
+  ignored?: Array<string | RegExp>;
 }
 
 /** Boolean Argument */
@@ -41,7 +41,7 @@ export interface NumberArg extends Arg {
 type Option = {
   name: string;
   value: string;
-}
+};
 
 /** Option Argument */
 export interface OptionArg extends Arg {

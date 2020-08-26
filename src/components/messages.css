@@ -10,18 +10,18 @@
 }
 
 .messages li.error {
-  font-family: "Cascadia Mono";
+  font-family: 'Cascadia Mono';
   background: red;
   color: white;
 }
 
 .messages li.warning {
-  font-family: "Cascadia Mono";
+  font-family: 'Cascadia Mono';
   background: yellow;
 }
 
 .messages li.info {
-  font-family: "Cascadia Mono";
+  font-family: 'Cascadia Mono';
   background: gainsboro;
 }
 
@@ -32,4 +32,3 @@
 .messages li > button {
   flex: 0;
 }
-

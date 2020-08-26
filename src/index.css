@@ -7,8 +7,9 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+
   margin: 0;
   padding: 0;
 }
@@ -23,7 +24,6 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-
 }
 
 section#main {
@@ -62,9 +62,15 @@ h1 {
   align-items: center;
 }
 
-#applications-list .app.selected { background-color: var(--sidebar-selected-bg-color); }
-#applications-list .app.selected:hover { background-color: var(--sidebar-selected-hover-bg-color); }
-#applications-list .app:hover { background-color: var(--sidebar-hover-bg-color); }
+#applications-list .app.selected {
+  background-color: var(--sidebar-selected-bg-color);
+}
+#applications-list .app.selected:hover {
+  background-color: var(--sidebar-selected-hover-bg-color);
+}
+#applications-list .app:hover {
+  background-color: var(--sidebar-hover-bg-color);
+}
 
 #applications-list .app h2 {
   font-size: 14px;
@@ -116,29 +122,29 @@ button {
   padding: 10px;
   margin: 5px;
   align-self: center;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
   border-radius: 5px;
   font-weight: bold;
 }
 
-input[type="text"] {
+input[type='text'] {
   padding: 5px;
   display: block;
   width: calc(100% - 10px);
-  border: 1px solid rgba(255,255,255,0.05);
-  background: rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
   outline: none;
   margin-top: 5px;
 }
 
-input[type="text"]:focus {
+input[type='text']:focus {
   display: block;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .highlight-icon {
@@ -160,7 +166,7 @@ input[type="text"]:focus {
 
 .tiny-btn:hover {
   background-color: rgba(255, 255, 255, 0.2);
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /* Output Console Display */
@@ -168,7 +174,7 @@ section#output {
   flex: none;
   order: 0;
   display: flex;
-  position:relative;
+  position: relative;
   background-color: var(--main-bg-color);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   overflow-x: auto;
@@ -183,8 +189,8 @@ section#output {
 
 .output {
   flex: 1 1 auto;
-  font-family: "Cascadia Mono", "Dank Mono", "Consolas", monospace;
-  color: #D4D4D4;
+  font-family: 'Cascadia Mono', 'Dank Mono', 'Consolas', monospace;
+  color: #d4d4d4;
   margin: 5px;
   margin-right: 0;
 }
@@ -205,7 +211,7 @@ section#output {
   padding-left: 2px;
   padding-right: 2px;
   border-radius: 2px;
-  background-color: rgba(255, 255, 255, 0.00);
+  background-color: rgba(255, 255, 255, 0);
   margin-left: 2px;
   margin-right: 2px;
 }

@@ -27,8 +27,10 @@
  */
 
 import './index.css';
-import './fa/css/all.css'
+import './fa/css/all.css';
 
-console.log('👋 This message is being logged by "renderer.js", included via webpack');
+console.log(
+  '👋 This message is being logged by "renderer.js", included via webpack',
+);
 
 import './javascript.ts';
