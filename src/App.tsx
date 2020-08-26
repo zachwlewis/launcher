@@ -6,138 +6,89 @@ import ReactDOM from 'react-dom';
 import { Console } from './components/console';
 import { ApplicationList } from './components/applicationList';
 import { ArgumentList } from './components/argumentList';
-import { Messages } from './components/messages';
+import { Message, Messages } from './components/messages';
 import { DragArea } from './components/dragArea';
 
+import { Store } from './store';
+
 import * as CT from './launcher-core/coreTypes';
+import * as CF from './launcher-core/coreFunctions';
 
 import './App.css';
 
-const appProps: CT.AppDefinition[] = [
-  {
-    app: { name: 'App One', path: '/path/one' },
-    args: [
-      {
-        name: 'Arg 1.1',
-        type: 'string',
-        value: '',
-        pre: '--arg1.1=',
-      },
-      {
-        name: 'Arg 1.2',
-        type: 'string',
-        value: '',
-        pre: '--arg1.2=',
-      },
-      {
-        name: 'Arg 1.3',
-        type: 'boolean',
-        value: false,
-        pre: '--arg1.3=',
-        true: 'true',
-        false: 'false',
-      },
-    ],
-  },
-  {
-    app: { name: 'App Two', path: '/path/two' },
-    args: [
-      {
-        name: 'Arg 2.1',
-        type: 'number',
-        value: 0,
-        pre: '--arg2.1=',
-        ignored: [69, 420],
-        tooltip: 'Ignored if the value is nice.',
-      },
-      {
-        name: 'Arg 2.2',
-        type: 'string',
-        value: '',
-        pre: '--arg2.2=',
-        tooltip: `Ignored if the value is nice, starts with ice or repeats 'a' just twice.`,
-        ignored: ['nice', /^ice/, /(?:^|[^a])aa(?!a)/],
-      },
-      {
-        name: 'Arg 2.3',
-        type: 'boolean',
-        value: true,
-        pre: '--arg2.3=',
-        true: 'high',
-        false: 'low',
-      },
-    ],
-  },
-  {
-    app: { name: 'App Three', path: '/path/three' },
-    args: [
-      {
-        name: 'Arg 3.1',
-        type: 'option',
-        value: '',
-        pre: '--arg3.1=',
-        options: [
-          { name: 'Option 1', value: 'value1' },
-          { name: 'Option 2', value: 'value2' },
-          { name: 'Option 3', value: 'value3' },
-          { name: 'Option 4', value: 'She said "hey."' },
-        ],
-      },
-      {
-        name: 'Arg 3.2',
-        type: 'number',
-        value: 420,
-        pre: '--arg3.2=',
-        radix: 16,
-      },
-      {
-        name: 'Arg 3.3',
-        type: 'boolean',
-        value: true,
-        pre: '--arg3.3=',
-        true: 'white',
-        false: 'black',
-      },
-    ],
-  },
-];
-
-type MessageErrorLevel = 'info' | 'warning' | 'error';
-
 type LauncherProps = {
-  apps: CT.AppDefinition[];
+  //apps: CT.AppDefinition[];
 };
-
+type AppState = {
+  selected: boolean;
+  values: Array<string | boolean | number>;
+};
 type LauncherState = {
   readonly defs: CT.AppDefinition[];
   selected: number;
-  apps: {
-    selected: boolean;
-    values: Array<string | boolean | number>;
-  }[];
+  apps: AppState[];
   /** The argument index to highlight. */
   peek: number;
   /** Messages currently visible to the user. */
-  messages: Array<[string, MessageErrorLevel]>;
+  messages: Message[];
 };
 
 class Launcher extends Component<LauncherProps, LauncherState> {
+  readonly store: Store;
   constructor(props: LauncherProps) {
     super(props);
-    // Apps Definition
-    const appState = props.apps.map((app, index) => {
-      return {
-        selected: index === 0,
-        values: app.args.map((arg) => arg.value),
-      };
+
+    // Create a Store to handle launcher persistence.
+
+    this.store = new Store({
+      // We'll call our data file 'user-preferences'
+      configName: 'launcherConfig',
+      defaults: {
+        appsConfigPath: '',
+      },
     });
+
     this.state = {
-      defs: props.apps,
-      selected: 0,
-      apps: appState,
+      defs: [],
+      selected: -1,
+      apps: [],
       peek: -1,
       messages: [],
     };
+  }
+
+  componentDidMount(): void {
+    // Load definitions
+
+    const definitionsPath = this.store.get('appsConfigPath') || '';
+
+    const loadResult = CF.loadDefinitions(definitionsPath);
+    console.log(
+      `Sourcing ${loadResult.value || [].length} definitions.`,
+      loadResult.value,
+    );
+    const source = this.sourceDefinitions(loadResult.value || []);
+
+    this.setState(source);
+  }
+
+  sourceDefinitions(
+    definitions: CT.AppDefinition[],
+  ): { defs: CT.AppDefinition[]; apps: AppState[]; selected: number } {
+    const appState = definitions.map<AppState>((def) => {
+      return {
+        selected: false,
+        values: def.args.map((arg) => arg.value),
+      };
+    });
+
+    console.log(
+      `Sourced ${appState.length} of ${definitions.length} definitions.`,
+      appState,
+      definitions,
+    );
+
+    return { defs: definitions, apps: appState, selected: -1 };
   }
 
   handleApplicationSelection(index: number): void {
@@ -171,14 +122,14 @@ class Launcher extends Component<LauncherProps, LauncherState> {
         .join(' ')
         .trim()
         .replace(/\s{2,}/g, ' '),
-      'error',
+      CT.ErrorLevel.Error,
     );
     ipcRenderer.send('launch', output);
   }
 
-  addMessage(message: string, type: MessageErrorLevel = 'info'): void {
+  addMessage(message: string, type: CT.ErrorLevel = CT.ErrorLevel.Info): void {
     let m = this.state.messages;
-    m.push([message, type]);
+    m.push({ message: message, error: type });
     this.setState({ messages: m });
   }
 
@@ -187,14 +138,33 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     this.setState({ messages: m });
   }
 
-  get selectedApp(): CT.AppDefinition {
-    return this.props.apps[this.state.selected];
+  get selectedApp(): CT.AppDefinition | null {
+    const count = this.state.defs.length;
+    if (count === 0 || this.state.selected >= count) {
+      console.log(
+        `Unable to select application ${this.state.selected}.`,
+        CT.ErrorLevel.Warn,
+      );
+      return null;
+    }
+
+    return this.state.defs[this.state.selected];
   }
   get selectedArgs(): (string | boolean | number)[] {
+    if (this.state.selected < 0) return [];
+
+    const count = this.state.apps.length;
+
+    if (count === 0 || this.state.selected >= count) return [];
+
     return this.state.apps[this.state.selected].values;
   }
 
   get selectedOutput(): Array<string> {
+    if (!this.selectedApp) {
+      return ['No app selected'];
+    }
+
     const values = this.selectedArgs;
     const args = this.selectedApp.args.map((arg, index) => {
       let svalue: string;
@@ -231,10 +201,18 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     for (const p of paths) {
       this.addMessage(`Dropped ${p}`);
     }
+
+    if (paths.length > 0) {
+      this.store.set('appsConfigPath', paths[0]);
+      const source = this.sourceDefinitions(
+        CF.loadDefinitions(paths[0]).value || [],
+      );
+      this.setState(source);
+    }
   }
 
   render() {
-    const appDefs = this.props.apps.map<CT.App>((app) => app.app);
+    const appDefs = this.state.defs.map<CT.App>((app) => app.app);
     return (
       <div>
         <section>
@@ -251,11 +229,13 @@ class Launcher extends Component<LauncherProps, LauncherState> {
         </section>
         <section>
           <nav>
-            <h1>{this.selectedApp.app.name}</h1>
+            <h1>
+              {this.selectedApp ? this.selectedApp.app.name : 'No App Selected'}
+            </h1>
             <button onClick={() => this.handleLaunchClick()}>Launch</button>
           </nav>
           <ArgumentList
-            definitions={this.selectedApp.args}
+            definitions={this.selectedApp ? this.selectedApp.args : []}
             values={this.selectedArgs}
             onArgChange={(value, index) => this.handleArgChange(value, index)}
             onArgPeek={(index) => this.handleArgPeek(index)}
@@ -277,4 +257,4 @@ class Launcher extends Component<LauncherProps, LauncherState> {
   }
 }
 
-ReactDOM.render(<Launcher apps={appProps} />, document.getElementById('root'));
+ReactDOM.render(<Launcher />, document.getElementById('root'));

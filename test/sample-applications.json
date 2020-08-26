@@ -1,113 +1,88 @@
 {
-  "applications": [
+  "definitions": [
     {
-      "name": "Sample One",
-      "path": "C:\\path\\to\\sample\\one.exe",
+      "app": { "name": "App One", "path": "/path/one" },
       "args": [
         {
-          "name": "Hidden Argument",
+          "name": "Arg 1.1",
           "type": "string",
-          "default": "--not_visible_in_launcher",
-          "display": "hidden"
+          "value": "",
+          "pre": "--arg1.1="
         },
         {
-          "name": "String Argument",
+          "name": "Arg 1.2",
           "type": "string",
-          "tooltip": "A basic string argument using pre and post values to wrap the input for display.",
-          "pre": "--sample_string=\"",
-          "post": "\"",
-          "default": "Default Value"
+          "value": "",
+          "pre": "--arg1.2="
         },
         {
-          "name": "Sample Boolean",
+          "name": "Arg 1.3",
           "type": "boolean",
-          "tooltip": "A basic boolean argument displaying the boolean value as \"checked\" or \"unchecked\".",
-          "pre": "--sample_boolean=",
-          "values": ["unchecked", "checked"],
-          "default": false
-        },
-        {
-          "name": "Sample Number",
-          "type": "number",
-          "tooltip": "A basic number argument with a range set to [0, 10].",
-          "range": [0, 10],
-          "step": 1,
-          "pre": "--sample_number=",
-          "default": 0
-        },
-        {
-          "name": "Dropdown",
-          "type": "option",
-          "tooltip": "A basic dropdown.",
-          "options": [
-            ["Item One", "value1"],
-            ["Item Two", "value2"],
-            ["Item Three", "value3"]
-          ],
-          "pre": "--sample_dropdown=",
-          "default": 0
-        },
-        {
-          "name": "Radio",
-          "type": "option",
-          "tooltip": "A basic radio selection.",
-          "options": [
-            ["Item One", "value1"],
-            ["Item Two", "value2"],
-            ["Item Three", "value3"]
-          ],
-          "pre": "--sample_radio=",
-          "default": 0
-        },
-        {
-          "name": "Additional Arguments",
-          "type": "string",
-          "default": ""
+          "value": false,
+          "pre": "--arg1.3=",
+          "true": "true",
+          "false": "false"
         }
       ]
     },
     {
-      "name": "Sample Two",
-      "path": "C:\\path\\to\\sample\\two.exe",
+      "app": { "name": "App Two", "path": "/path/two" },
       "args": [
         {
-          "name": "Hidden Argument",
-          "type": "string",
-          "default": "--not_visible_in_launcher",
-          "display": "hidden"
-        },
-        {
-          "name": "String Argument",
-          "type": "string",
-          "tooltip": "A string argument that is ignored from output when the value is \"ignore\".",
-          "pre": "--sample_string=\"",
-          "post": "\"",
-          "ignoreIfMatches": "ignore",
-          "default": "Default Value"
-        },
-        {
-          "name": "Sample Boolean",
-          "type": "boolean",
-          "tooltip": "A boolean argument that is ignored from output when the value is true.",
-          "pre": "--sample_boolean=",
-          "values": ["unchecked", "checked"],
-          "ignoreIfMatches": true,
-          "default": false
-        },
-        {
-          "name": "Sample Number",
+          "name": "Arg 2.1",
           "type": "number",
-          "tooltip": "A number argument that is ignored from output when the value is 69 (nice) or 420 (nice).",
-          "range": [0, 1000],
-          "step": 1,
-          "pre": "--sample_number=",
-          "ignoreIfMatches": [69, 420],
-          "default": 0
+          "value": 0,
+          "pre": "--arg2.1=",
+          "ignored": [69, 420],
+          "tooltip": "Ignored if the value is nice."
         },
         {
-          "name": "Additional Arguments",
+          "name": "Arg 2.2",
           "type": "string",
-          "default": ""
+          "value": "",
+          "pre": "--arg2.2=",
+          "tooltip": "Ignored if the value is nice, starts with ice or repeats 'a' just twice.",
+          "ignored": ["nice", "/^ice/", "/(?:^|[^a])aa(?!a)/"]
+        },
+        {
+          "name": "Arg 2.3",
+          "type": "boolean",
+          "value": true,
+          "pre": "--arg2.3=",
+          "true": "high",
+          "false": "low"
+        }
+      ]
+    },
+    {
+      "app": { "name": "App Three", "path": "/path/three" },
+      "args": [
+        {
+          "name": "Arg 3.1",
+          "type": "option",
+          "value": "",
+          "pre": "--arg3.1=",
+          "options": [
+            { "name": "Option 1", "value": "value1" },
+            { "name": "Option 2", "value": "value2" },
+            { "name": "Option 3", "value": "value3" },
+            { "name": "Option 4", "value": "She said \"hey.\"" }
+          ]
+        },
+        {
+          "name": "Arg 3.2",
+          "type": "number",
+          "value": 420,
+          "pre": "--arg3.2=",
+          "radix": 16
+        },
+        {
+          "name": "Arg 3.3",
+          "type": "boolean",
+          "value": true,
+          "pre": "--arg3.3=",
+          "true": "white",
+          "false": "black"
         }
       ]
     }
