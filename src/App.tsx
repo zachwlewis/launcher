@@ -16,13 +16,15 @@ import * as CF from './launcher-core/coreFunctions';
 
 import './App.css';
 
-type LauncherProps = {
-  //apps: CT.AppDefinition[];
-};
+type LauncherProps = {};
+
+/** The state of an application. */
 type AppState = {
   selected: boolean;
-  values: Array<string | boolean | number>;
+  args: CT.AnyArgState[];
 };
+
+/** The state of the launcher. */
 type LauncherState = {
   readonly defs: CT.AppDefinition[];
   selected: number;
@@ -31,6 +33,14 @@ type LauncherState = {
   peek: number;
   /** Messages currently visible to the user. */
   messages: Message[];
+};
+
+const defaultLauncherState: LauncherState = {
+  defs: [],
+  selected: -1,
+  apps: [],
+  peek: -1,
+  messages: [],
 };
 
 class Launcher extends Component<LauncherProps, LauncherState> {
@@ -48,13 +58,7 @@ class Launcher extends Component<LauncherProps, LauncherState> {
       },
     });
 
-    this.state = {
-      defs: [],
-      selected: -1,
-      apps: [],
-      peek: -1,
-      messages: [],
-    };
+    this.state = defaultLauncherState;
   }
 
   componentDidMount(): void {
@@ -63,12 +67,7 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     const definitionsPath = this.store.get('appsConfigPath') || '';
 
     const loadResult = CF.loadDefinitions(definitionsPath);
-    console.log(
-      `Sourcing ${loadResult.value || [].length} definitions.`,
-      loadResult.value,
-    );
     const source = this.sourceDefinitions(loadResult.value || []);
-
     this.setState(source);
   }
 
@@ -78,36 +77,36 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     const appState = definitions.map<AppState>((def) => {
       return {
         selected: false,
-        values: def.args.map((arg) => arg.value),
+        args: def.args.map((arg) => CT.createStateFor(arg)),
       };
     });
 
-    console.log(
-      `Sourced ${appState.length} of ${definitions.length} definitions.`,
-      appState,
-      definitions,
-    );
-
     return { defs: definitions, apps: appState, selected: -1 };
+  }
+
+  saveState(): void {
+    this.store.set('lastState', this.state);
   }
 
   handleApplicationSelection(index: number): void {
     const s = this.state.apps.map((app, idx) => {
       return {
         selected: idx === index,
-        values: app.values,
+        args: app.args,
       };
     });
 
     // Message testing
     this.addMessage(`${this.state.defs[index].app.name} selected.`);
     this.setState({ selected: index, apps: s });
+    this.saveState();
   }
 
-  handleArgChange(value: string | boolean | number, index: number): void {
+  handleArgChange(value: CT.AnyArgState, index: number): void {
     let s = this.state.apps;
-    s[this.state.selected].values[index] = value;
+    s[this.state.selected].args[index] = value;
     this.setState({ apps: s });
+    this.saveState();
   }
 
   handleArgPeek(index: number): void {
@@ -141,28 +140,29 @@ class Launcher extends Component<LauncherProps, LauncherState> {
   get selectedApp(): CT.AppDefinition | null {
     const count = this.state.defs.length;
     if (count === 0 || this.state.selected >= count) {
-      console.log(
-        `Unable to select application ${this.state.selected}.`,
-        CT.ErrorLevel.Warn,
-      );
       return null;
     }
 
     return this.state.defs[this.state.selected];
   }
-  get selectedArgs(): (string | boolean | number)[] {
-    if (this.state.selected < 0) return [];
+  get selectedArgs(): CT.AnyArgState[] {
+    // Handle no selection.
+    if (this.state.selected < 0) {
+      return [];
+    }
 
+    // Handle out of bounds selections.
     const count = this.state.apps.length;
+    if (count === 0 || this.state.selected >= count) {
+      return [];
+    }
 
-    if (count === 0 || this.state.selected >= count) return [];
-
-    return this.state.apps[this.state.selected].values;
+    return this.state.apps[this.state.selected].args;
   }
 
   get selectedOutput(): Array<string> {
     if (!this.selectedApp) {
-      return ['No app selected'];
+      return ['No app selected.'];
     }
 
     const values = this.selectedArgs;
@@ -171,23 +171,20 @@ class Launcher extends Component<LauncherProps, LauncherState> {
       let ignored = false;
       switch (arg.type) {
         case 'string':
-          svalue = (values[index] as string) || arg.value;
-          // If every match is null, the value doesn't exist in the ignored list.
-          ignored =
-            (arg.ignored || []).find((m) => svalue.match(m) !== null) !==
-            undefined;
+          svalue = values[index].value as string;
+          ignored = (arg.ignored || []).includes(svalue);
           break;
         case 'number':
-          const v = (values[index] as number) || arg.value;
+          const v = values[index].value as number;
           svalue = v.toString(arg.radix || 10);
           // If the value is included in the ignored list, it should be ignored.
           ignored = (arg.ignored || []).includes(v);
           break;
         case 'boolean':
-          svalue = (values[index] as boolean) ? arg.true : arg.false;
+          svalue = (values[index].value as boolean) ? arg.true : arg.false;
           break;
         case 'option':
-          svalue = (values[index] as string) || arg.value;
+          svalue = values[index].value as string;
           break;
       }
 

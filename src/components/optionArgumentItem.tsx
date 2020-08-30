@@ -1,21 +1,21 @@
 import React, { FunctionComponent, Component, ChangeEvent } from 'react';
-import * as AT from '../launcher-core/coreTypes';
+import * as CT from '../launcher-core/coreTypes';
 
 type OptionArgumentItemProps = {
   id: string;
-  definition: AT.OptionArg;
-  value: string;
-  onValueChange: (value: string) => void;
+  definition: CT.OptionArg;
+  state: CT.OptionArgState;
+  onValueChange: (value: CT.OptionArgState) => void;
 };
 
 export const OptionArgumentItem: FunctionComponent<OptionArgumentItemProps> = ({
   id,
   definition,
-  value,
+  state,
   onValueChange,
 }) => {
   function handleChange(event: ChangeEvent<HTMLSelectElement>): void {
-    onValueChange(event.target.value);
+    onValueChange({ type: 'option', value: event.target.value });
   }
   const options = definition.options.map((option) => (
     <option key={option.value} value={option.value}>
@@ -23,7 +23,7 @@ export const OptionArgumentItem: FunctionComponent<OptionArgumentItemProps> = ({
     </option>
   ));
   return (
-    <select id={id} value={value} onChange={handleChange}>
+    <select id={id} value={state.value} onChange={handleChange}>
       {options}
     </select>
   );
