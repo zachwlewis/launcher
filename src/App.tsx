@@ -88,6 +88,28 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     this.store.set('lastState', this.state);
   }
 
+  updateJumpList(): void {
+    let tasks: Electron.Task[] = [];
+    for (let i = 0; i < this.state.defs.length; ++i) {
+      const output = this.makeOutput(i);
+      let path = this.state.defs[i].app.path;
+      let args = output
+        .slice(1)
+        .join(' ')
+        .trim()
+        .replace(/\s{2,}/g, ' ');
+      tasks.push({
+        program: path,
+        arguments: args,
+        description: `Launch ${this.state.defs[i].app.name} with last configuration.`,
+        title: this.state.defs[i].app.name,
+        iconIndex: 0,
+        iconPath: path,
+      });
+    }
+    ipcRenderer.send('setUserTasks', tasks);
+  }
+
   handleApplicationSelection(index: number): void {
     const s = this.state.apps.map((app, idx) => {
       return {
@@ -106,6 +128,8 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     let s = this.state.apps;
     s[this.state.selected].args[index] = value;
     this.setState({ apps: s });
+    console.log('argchange');
+    this.updateJumpList();
     this.saveState();
   }
 

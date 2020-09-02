@@ -8,6 +8,11 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+const tasks = (t: Electron.Task[]) => {
+  app.setUserTasks(t);
+};
+tasks([]);
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -75,4 +80,8 @@ ipcMain.on('launch', (event, args: string[]) => {
 
 ipcMain.on('updateTitle', (event, arg) => {
   BrowserWindow.getAllWindows()[0].setTitle(`${arg} | Launcher`);
+});
+
+ipcMain.on('setUserTasks', (event, arg) => {
+  tasks(arg);
 });
