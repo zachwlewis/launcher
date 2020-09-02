@@ -21,4 +21,16 @@
 
 .application-list-item button {
   flex: 0;
+  padding: 0px;
+  line-height: 0;
+  opacity: 0.2;
+}
+
+.application-list-item:hover button {
+  opacity: 1;
+}
+
+.application-list-item button svg {
+  width: 20px;
+  height: 20px;
 }
