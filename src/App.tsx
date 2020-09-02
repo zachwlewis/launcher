@@ -114,8 +114,15 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     this.setState({ peek: peekIndex });
   }
 
-  handleLaunchClick(): void {
-    const output = this.selectedOutput;
+  handleLaunchClick(index?: number): void {
+    let output: string[] = [];
+    if (index === undefined) {
+      // Launch the current application.
+      output = this.selectedOutput;
+    } else if (index >= 0 && index < this.state.defs.length) {
+      // Quicklaunch the selected application.
+      output = this.makeOutput(index);
+    }
     this.addMessage(
       output
         .join(' ')
@@ -128,8 +135,12 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 
   addMessage(message: string, type: CT.ErrorLevel = CT.ErrorLevel.Info): void {
     let m = this.state.messages;
-    m.push({ message: message, error: type });
-    this.setState({ messages: m });
+    if (type === CT.ErrorLevel.Info) {
+      console.log(message);
+    } else {
+      m.push({ message: message, error: type });
+      this.setState({ messages: m });
+    }
   }
 
   removeMessage(index: number): void {
@@ -158,6 +169,36 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     }
 
     return this.state.apps[this.state.selected].args;
+  }
+
+  makeOutput(index: number): string[] {
+    const values = this.state.apps[index].args;
+    const args = this.state.defs[index].args.map((arg, index) => {
+      let svalue: string;
+      let ignored = false;
+      switch (arg.type) {
+        case 'string':
+          svalue = values[index].value as string;
+          ignored = (arg.ignored || []).includes(svalue);
+          break;
+        case 'number':
+          const v = values[index].value as number;
+          svalue = v.toString(arg.radix || 10);
+          // If the value is included in the ignored list, it should be ignored.
+          ignored = (arg.ignored || []).includes(v);
+          break;
+        case 'boolean':
+          svalue = (values[index].value as boolean) ? arg.true : arg.false;
+          break;
+        case 'option':
+          svalue = values[index].value as string;
+          break;
+      }
+
+      return ignored ? '' : `${arg.pre || ''}${svalue}${arg.post || ''}`;
+    });
+
+    return [this.state.defs[index].app.path].concat(args);
   }
 
   get selectedOutput(): Array<string> {
@@ -211,43 +252,48 @@ class Launcher extends Component<LauncherProps, LauncherState> {
   render() {
     const appDefs = this.state.defs.map<CT.App>((app) => app.app);
     return (
-      <div>
-        <section>
-          <ApplicationList
-            definitions={appDefs}
-            selected={this.state.selected}
-            onApplicationSelected={(index) => {
-              this.handleApplicationSelection(index);
-            }}
-          />
-          <DragArea
-            onFilesDropped={(paths) => this.handleFilesDropped(paths)}
-          />
-        </section>
-        <section>
-          <nav>
-            <h1>
-              {this.selectedApp ? this.selectedApp.app.name : 'No App Selected'}
-            </h1>
-            <button onClick={() => this.handleLaunchClick()}>Launch</button>
-          </nav>
-          <ArgumentList
-            definitions={this.selectedApp ? this.selectedApp.args : []}
-            values={this.selectedArgs}
-            onArgChange={(value, index) => this.handleArgChange(value, index)}
-            onArgPeek={(index) => this.handleArgPeek(index)}
-          />
-        </section>
-        <section>
-          <Console
-            args={this.selectedOutput}
-            selected={this.state.peek}
-            expanded={false}
-          />
+      <div className="app">
+        <section className="main">
+          <section className="application-list">
+            <ApplicationList
+              definitions={appDefs}
+              selected={this.state.selected}
+              onApplicationSelected={(index) =>
+                this.handleApplicationSelection(index)
+              }
+              onApplicationQuickLaunched={(index) =>
+                this.handleLaunchClick(index)
+              }
+            />
+            <DragArea
+              onFilesDropped={(paths) => this.handleFilesDropped(paths)}
+            />
+          </section>
+          <section className="argument-list">
+            <nav>
+              <h1>
+                {this.selectedApp
+                  ? this.selectedApp.app.name
+                  : 'No App Selected'}
+              </h1>
+              <button onClick={() => this.handleLaunchClick()}>Launch</button>
+            </nav>
+            <ArgumentList
+              definitions={this.selectedApp ? this.selectedApp.args : []}
+              values={this.selectedArgs}
+              onArgChange={(value, index) => this.handleArgChange(value, index)}
+              onArgPeek={(index) => this.handleArgPeek(index)}
+            />
+          </section>
         </section>
         <Messages
           messages={this.state.messages}
           onMessageDismissed={(index) => this.removeMessage(index)}
+        />
+        <Console
+          args={this.selectedOutput}
+          selected={this.state.peek}
+          expanded={false}
         />
       </div>
     );

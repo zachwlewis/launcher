@@ -1,3 +1,66 @@
+:root {
+  --console-background: #111111;
+  --console-foreground: #dddddd;
+}
+
 body {
   background: white;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+div.app {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+section.main {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+section.argument-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.argument-list nav {
+  display: flex;
+  align-items: center;
+}
+.argument-list nav > * {
+  flex: 0 0 auto;
+}
+.argument-list nav > *:first-child {
+  flex: 1 0 auto;
+}
+
+.argument-list nav > *:last-child {
+  margin-right: 10px;
+}
+
+section.application-list {
+  flex: 0 0 250px;
+  overflow-y: auto;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+section.console {
+  flex: 0 0 auto;
+  padding: 5px;
+  background: var(--console-background);
+  color: var(--console-foreground);
+}
+
+h1 {
+  padding: 5px;
+  margin: 10px 0;
 }

@@ -9,10 +9,12 @@ type ArgumentLabelProps = {
 };
 
 export const ArgumentLabel = (props: ArgumentLabelProps) => (
-  <label htmlFor={props.for} title={props.definition.tooltip || ''}>
-    {props.definition.name}{' '}
-    <i onMouseEnter={props.onStartPeek} onMouseLeave={props.onEndPeek}>
-      Peek
-    </i>
+  <label
+    htmlFor={props.for}
+    title={props.definition.tooltip || ''}
+    onMouseEnter={props.onStartPeek}
+    onMouseLeave={props.onEndPeek}
+  >
+    {props.definition.name}
   </label>
 );

@@ -3,17 +3,22 @@
   padding: 0;
 }
 
-.application-list li {
-  display: flex;
-  margin: 5px;
-  padding: 5px;
-  cursor: pointer;
-}
-
-.application-list li.selected {
+.application-list-item.selected {
   background-color: yellow;
 }
 
-.application-list li > * {
+.application-list-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 5px;
+  margin: 0;
+}
+
+.application-list-item .label {
   flex: 1;
+}
+
+.application-list-item button {
+  flex: 0;
 }
