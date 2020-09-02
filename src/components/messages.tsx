@@ -25,9 +25,12 @@ export const Messages = (props: MessagesProps) => {
   };
   const items = props.messages
     .map((m, i) => (
-      <li key={`msg${i}`} className={getErrorClass(m.error)}>
+      <li
+        key={`msg${i}`}
+        className={getErrorClass(m.error)}
+        onClick={() => props.onMessageDismissed(i)}
+      >
         <span>{m.message}</span>
-        <button onClick={() => props.onMessageDismissed(i)}>Dismiss</button>
       </li>
     ))
     .reverse();

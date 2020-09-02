@@ -116,12 +116,17 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 
   handleLaunchClick(index?: number): void {
     let output: string[] = [];
+    let valid = false;
     if (index === undefined) {
       // Launch the current application.
       output = this.selectedOutput;
+      valid = this.selectedApp !== null;
     } else if (index >= 0 && index < this.state.defs.length) {
       // Quicklaunch the selected application.
       output = this.makeOutput(index);
+      valid = true;
+    } else {
+      output = ['Invalid selection.'];
     }
     this.addMessage(
       output
@@ -130,16 +135,28 @@ class Launcher extends Component<LauncherProps, LauncherState> {
         .replace(/\s{2,}/g, ' '),
       CT.ErrorLevel.Error,
     );
-    ipcRenderer.send('launch', output);
+
+    if (valid) {
+      ipcRenderer.send('launch', output);
+    }
   }
 
   addMessage(message: string, type: CT.ErrorLevel = CT.ErrorLevel.Info): void {
     let m = this.state.messages;
-    if (type === CT.ErrorLevel.Info) {
-      console.log(message);
-    } else {
-      m.push({ message: message, error: type });
-      this.setState({ messages: m });
+    switch (type) {
+      case CT.ErrorLevel.Info:
+        console.log(message);
+        break;
+      case CT.ErrorLevel.Warn:
+        console.warn(message);
+        m.push({ message: message, error: type });
+        this.setState({ messages: m });
+        break;
+      case CT.ErrorLevel.Error:
+        console.error(message);
+        m.push({ message: message, error: type });
+        this.setState({ messages: m });
+        break;
     }
   }
 

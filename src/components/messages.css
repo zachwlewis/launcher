@@ -9,6 +9,7 @@
   margin: 5px;
   padding: 5px;
   align-items: center;
+  cursor: pointer;
 }
 
 .messages li.error {
