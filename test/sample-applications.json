@@ -103,14 +103,14 @@
           "name": "Number (Hidden)",
           "default": 420.69,
           "tooltip": "A hidden number argument with a default value.",
-          "display": "hidden"
+          "display": "hidden",
+          "pre": "--hidden="
         },
         {
           "type": "number",
           "name": "Number (Defaulted)",
           "default": 420,
-          "tooltip": "A number argument with a default value.",
-          "pre": "--hidden="
+          "tooltip": "A number argument with a default value."
         },
         {
           "type": "number",
@@ -119,6 +119,14 @@
           "tooltip": "A number argument that can't be changed.",
           "display": "readonly",
           "pre": "--readonly="
+        },
+        {
+          "type": "number",
+          "name": "Number (Integer)",
+          "default": 69,
+          "tooltip": "An integer number argument.",
+          "pre": "--int=",
+          "format": "integer"
         },
         {
           "type": "number",
@@ -289,25 +297,24 @@
           "options": [
             {
               "name": "Option 1",
-              "value": "value_1"
+              "value": "--allowed1"
             },
             {
               "name": "Option 2",
-              "value": "value_2"
+              "value": "--ignored2"
             },
             {
               "name": "Option 3",
-              "value": "value_3"
+              "value": "--allowed3"
             },
             {
               "name": "Option 4",
-              "value": "value_4"
+              "value": "--ignored4"
             }
           ],
-          "pre": "pre-",
-          "post": "-post",
-          "ignored": ["value_2", "value_4"],
-          "tooltip": "A option argument with a pre and post value that's ignored if Option 2 or Option 4."
+          "post": "=shown",
+          "ignored": ["--ignored2", "--ignored4"],
+          "tooltip": "A option argument that's ignored if Option 2 or Option 4."
         },
         {
           "type": "option",

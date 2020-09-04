@@ -61,6 +61,8 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     this.state = defaultLauncherState;
   }
 
+  componentWillMount(): void {}
+
   componentDidMount(): void {
     // Load definitions
 
@@ -128,7 +130,6 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     let s = this.state.apps;
     s[this.state.selected].args[index] = value;
     this.setState({ apps: s });
-    console.log('argchange');
     this.updateJumpList();
     this.saveState();
   }
@@ -212,6 +213,7 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     return this.state.apps[this.state.selected].args;
   }
 
+  /** Converts the launch values to an output string array. */
   makeOutput(index: number): string[] {
     const values = this.state.apps[index].args;
     const args = this.state.defs[index].args.map((arg, index) => {
@@ -233,6 +235,8 @@ class Launcher extends Component<LauncherProps, LauncherState> {
           break;
         case 'option':
           svalue = values[index].value as string;
+          // If the value is included in the ignored list, it should be ignored.
+          ignored = (arg.ignored || []).includes(svalue);
           break;
       }
 
@@ -247,33 +251,9 @@ class Launcher extends Component<LauncherProps, LauncherState> {
       return ['No app selected.'];
     }
 
-    const values = this.selectedArgs;
-    const args = this.selectedApp.args.map((arg, index) => {
-      let svalue: string;
-      let ignored = false;
-      switch (arg.type) {
-        case 'string':
-          svalue = values[index].value as string;
-          ignored = (arg.ignored || []).includes(svalue);
-          break;
-        case 'number':
-          const v = values[index].value as number;
-          svalue = v.toString(arg.radix || 10);
-          // If the value is included in the ignored list, it should be ignored.
-          ignored = (arg.ignored || []).includes(v);
-          break;
-        case 'boolean':
-          svalue = (values[index].value as boolean) ? arg.true : arg.false;
-          break;
-        case 'option':
-          svalue = values[index].value as string;
-          break;
-      }
-
-      return ignored ? '' : `${arg.pre || ''}${svalue}${arg.post || ''}`;
-    });
-
-    return [this.selectedApp.app.path].concat(args);
+    return [this.selectedApp.app.path].concat(
+      this.makeOutput(this.state.selected),
+    );
   }
 
   handleFilesDropped(paths: string[]): void {
@@ -335,6 +315,7 @@ class Launcher extends Component<LauncherProps, LauncherState> {
           args={this.selectedOutput}
           selected={this.state.peek}
           expanded={false}
+          prompt="$"
         />
       </div>
     );

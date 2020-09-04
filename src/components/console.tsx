@@ -14,14 +14,13 @@ type ConsoleState = {
 };
 
 export class Console extends Component<ConsoleProps, ConsoleState> {
-  constructor(props: ConsoleProps) {
+  constructor(props: ConsoleProps, state?: ConsoleState) {
     super(props);
     this.state = { expanded: props.expanded };
   }
 
   handleExpansion() {
     this.setState({ expanded: !this.state.expanded });
-    console.log(this.state);
   }
 
   render() {

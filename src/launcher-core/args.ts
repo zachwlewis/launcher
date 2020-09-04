@@ -46,6 +46,7 @@ export interface NumberArg extends Arg {
   maximum?: number;
   step?: number;
   radix?: number;
+  format?: 'float' | 'integer';
   /** A list of values that cause the entire argument to be ignored. */
   ignored?: Array<number>;
 }
@@ -62,6 +63,8 @@ export interface OptionArg extends Arg {
   /** The default value of the argument. */
   default?: string;
   options: Option[];
+  /** A list of values that cause the entire argument to be ignored. */
+  ignored?: string[];
 }
 
 export type AnyArg = StringArg | BooleanArg | NumberArg | OptionArg;
