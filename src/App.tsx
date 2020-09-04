@@ -55,13 +55,13 @@ class Launcher extends Component<LauncherProps, LauncherState> {
       configName: 'launcherConfig',
       defaults: {
         appsConfigPath: '',
+        consoleExpanded: false,
+        consolePrompt: '>',
       },
     });
 
     this.state = defaultLauncherState;
   }
-
-  componentWillMount(): void {}
 
   componentDidMount(): void {
     // Load definitions
@@ -70,7 +70,11 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 
     const loadResult = CF.loadDefinitions(definitionsPath);
     const source = this.sourceDefinitions(loadResult.value || []);
-    this.setState(source);
+    this.setState({
+      ...source,
+      ...this.store.get('lastState'),
+      ...{ messages: [] },
+    });
   }
 
   sourceDefinitions(
@@ -164,6 +168,14 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     if (valid) {
       ipcRenderer.send('launch', output);
     }
+  }
+
+  handleConsoleExpansionChange(expanded: boolean): void {
+    this.store.set('consoleExpanded', expanded);
+  }
+
+  handleConsolePromptChange(prompt: string): void {
+    this.store.set('consolePrompt', prompt);
   }
 
   addMessage(message: string, type: CT.ErrorLevel = CT.ErrorLevel.Info): void {
@@ -314,8 +326,10 @@ class Launcher extends Component<LauncherProps, LauncherState> {
         <Console
           args={this.selectedOutput}
           selected={this.state.peek}
-          expanded={false}
-          prompt="$"
+          expanded={this.store.get('consoleExpanded')}
+          prompt={this.store.get('consolePrompt')}
+          onExpansionChanged={(e) => this.handleConsoleExpansionChange(e)}
+          onPromptChanged={(e) => this.handleConsolePromptChange(e)}
         />
       </div>
     );

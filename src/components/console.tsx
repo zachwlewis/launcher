@@ -7,20 +7,37 @@ type ConsoleProps = {
   selected: number;
   expanded: boolean;
   prompt?: string;
+  onExpansionChanged: (expanded: boolean) => void;
+  onPromptChanged: (prompt: string) => void;
 };
 
 type ConsoleState = {
   expanded: boolean;
+  prompt: string;
 };
 
 export class Console extends Component<ConsoleProps, ConsoleState> {
+  readonly prompts = ['>', '$', '%', '→', '#', ':', '@', '💩'];
   constructor(props: ConsoleProps, state?: ConsoleState) {
     super(props);
-    this.state = { expanded: props.expanded };
+    this.state = {
+      expanded: props.expanded,
+      prompt: props.prompt || this.prompts[0],
+    };
   }
 
   handleExpansion() {
-    this.setState({ expanded: !this.state.expanded });
+    const expanded = !this.state.expanded;
+    this.props.onExpansionChanged(expanded);
+    this.setState({ expanded: expanded });
+  }
+
+  nextPrompt() {
+    const i = this.prompts.indexOf(this.state.prompt) + 1;
+    const nextPrompt =
+      i < this.prompts.length ? this.prompts[i] : this.prompts[0];
+    this.props.onPromptChanged(nextPrompt);
+    this.setState({ prompt: nextPrompt });
   }
 
   render() {
@@ -65,7 +82,9 @@ export class Console extends Component<ConsoleProps, ConsoleState> {
 
     return (
       <section className="console">
-        <span className="prompt">{this.props.prompt || '>'}</span>
+        <span className="prompt" onClick={() => this.nextPrompt()}>
+          {this.state.prompt}
+        </span>
         <code className={consoleClass}>{argList}</code>
         <button
           className="expansion-toggle"
