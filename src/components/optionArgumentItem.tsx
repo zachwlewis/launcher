@@ -23,7 +23,12 @@ export const OptionArgumentItem: FunctionComponent<OptionArgumentItemProps> = ({
     </option>
   ));
   return (
-    <select id={id} value={state.value} onChange={handleChange}>
+    <select
+      id={id}
+      value={state.value}
+      onChange={handleChange}
+      disabled={definition.display === 'readonly'}
+    >
       {options}
     </select>
   );

@@ -16,5 +16,6 @@ export const BooleanArgumentItem = (props: BooleanArgumentItemProps) => (
     onChange={(event) => {
       props.onValueChange({ type: 'boolean', value: event.target.checked });
     }}
+    disabled={props.definition.display === 'readonly'}
   />
 );

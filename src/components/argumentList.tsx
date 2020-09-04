@@ -33,8 +33,9 @@ export class ArgumentList extends Component<
     index: number,
   ): JSX.Element {
     const k = `arg${index}`;
+    const argClass = arg.display || 'visible';
     return (
-      <li key={k}>
+      <li key={k} className={argClass}>
         <AIC.ArgumentLabel
           for={k}
           definition={arg}
@@ -57,8 +58,9 @@ export class ArgumentList extends Component<
     index: number,
   ): JSX.Element {
     const k = `arg${index}`;
+    const argClass = arg.display || 'visible';
     return (
-      <li key={k}>
+      <li key={k} className={argClass}>
         <AIC.BooleanArgumentItem
           definition={arg}
           state={state}
@@ -81,8 +83,9 @@ export class ArgumentList extends Component<
     index: number,
   ): JSX.Element {
     const k = `arg${index}`;
+    const argClass = arg.display || 'visible';
     return (
-      <li key={k}>
+      <li key={k} className={argClass}>
         <AIC.ArgumentLabel
           for={k}
           definition={arg}
@@ -105,8 +108,9 @@ export class ArgumentList extends Component<
     index: number,
   ): JSX.Element {
     const k = `arg${index}`;
+    const argClass = arg.display || 'visible';
     return (
-      <li key={k}>
+      <li key={k} className={argClass}>
         <AIC.ArgumentLabel
           for={k}
           definition={arg}

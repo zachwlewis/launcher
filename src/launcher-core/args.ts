@@ -11,6 +11,9 @@ interface Arg {
 
   /** Additional information about the argument. */
   tooltip?: string;
+
+  /** The visibility of the argument. */
+  display?: 'visible' | 'hidden' | 'readonly';
 }
 
 /** String Argument */

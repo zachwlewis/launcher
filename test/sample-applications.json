@@ -10,6 +10,20 @@
         },
         {
           "type": "string",
+          "name": "String (Hidden)",
+          "tooltip": "This string will be added, but isn't shown.",
+          "default": "--hidden-arg",
+          "display": "hidden"
+        },
+        {
+          "type": "string",
+          "name": "String (Read-only)",
+          "tooltip": "This string can't be edited.",
+          "default": "--readonly-arg",
+          "display": "readonly"
+        },
+        {
+          "type": "string",
           "name": "String (Defaulted)",
           "default": "default",
           "tooltip": "A string argument with a default value."
@@ -51,6 +65,15 @@
         },
         {
           "type": "boolean",
+          "name": "Boolean (Read-only)",
+          "true": "true",
+          "false": "false",
+          "default": true,
+          "tooltip": "A boolean argument that can't be changed.",
+          "display": "readonly"
+        },
+        {
+          "type": "boolean",
           "name": "Boolean (Pre & Post)",
           "true": "true",
           "false": "false",
@@ -77,9 +100,25 @@
         },
         {
           "type": "number",
-          "name": "Number (Defaulted)",
+          "name": "Number (Hidden)",
           "default": 420.69,
-          "tooltip": "A number argument with a default value."
+          "tooltip": "A hidden number argument with a default value.",
+          "display": "hidden"
+        },
+        {
+          "type": "number",
+          "name": "Number (Defaulted)",
+          "default": 420,
+          "tooltip": "A number argument with a default value.",
+          "pre": "--hidden="
+        },
+        {
+          "type": "number",
+          "name": "Number (Read-only)",
+          "default": 69,
+          "tooltip": "A number argument that can't be changed.",
+          "display": "readonly",
+          "pre": "--readonly="
         },
         {
           "type": "number",
@@ -166,6 +205,58 @@
           ],
           "default": "value_3",
           "tooltip": "A option argument with a default value."
+        },
+        {
+          "type": "option",
+          "name": "Option (Hidden)",
+          "options": [
+            {
+              "name": "Option 1",
+              "value": "value_1"
+            },
+            {
+              "name": "Option 2",
+              "value": "value_2"
+            },
+            {
+              "name": "Option 3",
+              "value": "value_3"
+            },
+            {
+              "name": "Option 4",
+              "value": "value_4"
+            }
+          ],
+          "pre": "--hidden=",
+          "default": "value_3",
+          "display": "hidden",
+          "tooltip": "A hidden option argument with a default value."
+        },
+        {
+          "type": "option",
+          "name": "Option (Read-only)",
+          "options": [
+            {
+              "name": "Option 1",
+              "value": "value_1"
+            },
+            {
+              "name": "Option 2",
+              "value": "value_2"
+            },
+            {
+              "name": "Option 3",
+              "value": "value_3"
+            },
+            {
+              "name": "Option 4",
+              "value": "value_4"
+            }
+          ],
+          "pre": "--readonly=",
+          "default": "value_3",
+          "display": "readonly",
+          "tooltip": "A readonly option argument with a default value."
         },
         {
           "type": "option",

@@ -9,8 +9,11 @@ if (require('electron-squirrel-startup')) {
 }
 
 const tasks = (t: Electron.Task[]) => {
-  app.setUserTasks(t);
+  if (process.platform === 'win32') {
+    app.setUserTasks(t);
+  }
 };
+
 tasks([]);
 
 const createWindow = () => {

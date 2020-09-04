@@ -27,6 +27,7 @@ export const NumberArgumentItem = (props: NumberArgumentItemProps) => {
       min={props.definition.minimum}
       max={props.definition.maximum}
       onChange={(event) => handleValueChange(event.target.value)}
+      disabled={props.definition.display === 'readonly'}
     />
   );
 };

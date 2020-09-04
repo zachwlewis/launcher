@@ -21,5 +21,6 @@ export const StringArgumentItem: FunctionComponent<StringArgumentItemProps> = ({
     onChange={(event) =>
       onValueChange({ type: 'string', value: event.target.value })
     }
+    disabled={definition.display === 'readonly'}
   ></input>
 );

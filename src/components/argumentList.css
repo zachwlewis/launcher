@@ -10,6 +10,10 @@
   cursor: pointer;
 }
 
+.argument-list li.hidden {
+  display: none;
+}
+
 .argument-list li.error {
   font-family: 'Cascadia Mono';
   background: red;
