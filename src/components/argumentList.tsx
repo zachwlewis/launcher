@@ -33,7 +33,7 @@ export class ArgumentList extends Component<
     index: number,
   ): JSX.Element {
     const k = `arg${index}`;
-    const argClass = arg.display || 'visible';
+    const argClass = `string ${arg.display || 'visible'}`;
     return (
       <li key={k} className={argClass}>
         <AIC.ArgumentLabel
@@ -58,7 +58,7 @@ export class ArgumentList extends Component<
     index: number,
   ): JSX.Element {
     const k = `arg${index}`;
-    const argClass = arg.display || 'visible';
+    const argClass = `boolean ${arg.display || 'visible'}`;
     return (
       <li key={k} className={argClass}>
         <AIC.BooleanArgumentItem
@@ -77,13 +77,13 @@ export class ArgumentList extends Component<
     );
   }
 
-  buildIntArgumentItem(
+  buildNumberArgumentItem(
     arg: CT.NumberArg,
     state: CT.NumberArgState,
     index: number,
   ): JSX.Element {
     const k = `arg${index}`;
-    const argClass = arg.display || 'visible';
+    const argClass = `number ${arg.display || 'visible'}`;
     return (
       <li key={k} className={argClass}>
         <AIC.ArgumentLabel
@@ -108,7 +108,7 @@ export class ArgumentList extends Component<
     index: number,
   ): JSX.Element {
     const k = `arg${index}`;
-    const argClass = arg.display || 'visible';
+    const argClass = `option ${arg.display || 'visible'}`;
     return (
       <li key={k} className={argClass}>
         <AIC.ArgumentLabel
@@ -140,7 +140,7 @@ export class ArgumentList extends Component<
           index,
         );
       case 'number':
-        return this.buildIntArgumentItem(
+        return this.buildNumberArgumentItem(
           arg,
           state as CT.NumberArgState,
           index,

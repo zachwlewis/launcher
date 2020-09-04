@@ -1,13 +1,15 @@
 :root {
   --console-background: #111111;
   --console-foreground: #dddddd;
+  --monospaced-font: "Cascadia Mono";
+  --default-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
   background: white;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--default-font);
 }
 
 div.app {
