@@ -7,11 +7,15 @@
   background-color: yellow;
 }
 
+.application-list-item:hover {
+  background-color: gainsboro;
+}
+
 .application-list-item {
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 10px 5px;
+  padding: 0.5rem;
   margin: 0;
 }
 

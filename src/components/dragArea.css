@@ -1,8 +1,7 @@
-.dragArea
-{
-  margin: 5px;
-  padding: 15px;
-  border-radius: 5px;
+.dragArea {
+  margin: 0.5rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
   border: 2px dashed gainsboro;
   text-align: center;
 }

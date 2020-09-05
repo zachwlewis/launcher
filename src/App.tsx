@@ -8,6 +8,7 @@ import { ApplicationList } from './components/applicationList';
 import { ArgumentList } from './components/argumentList';
 import { Message, Messages } from './components/messages';
 import { DragArea } from './components/dragArea';
+import { TitleBar } from './components/titleBar';
 
 import { Store } from './store';
 
@@ -146,17 +147,13 @@ class Launcher extends Component<LauncherProps, LauncherState> {
   handleLaunchClick(index?: number): void {
     let output: string[] = [];
     let valid = false;
-    if (index === undefined) {
-      // Launch the current application.
-      output = this.selectedOutput;
-      valid = this.selectedApp !== null;
-    } else if (index >= 0 && index < this.state.defs.length) {
-      // Quicklaunch the selected application.
-      output = this.makeOutput(index);
-      valid = true;
-    } else {
-      output = ['Invalid selection.'];
-    }
+    if (index === undefined) index = this.state.selected;
+
+    output = this.makeOutput(index);
+    valid = output.length > 0;
+
+    if (!valid) output = ['Invalid selection.'];
+
     this.addMessage(
       output
         .join(' ')
@@ -202,27 +199,29 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     this.setState({ messages: m });
   }
 
-  get selectedApp(): CT.AppDefinition | null {
-    const count = this.state.defs.length;
-    if (count === 0 || this.state.selected >= count) {
-      return null;
-    }
-
-    return this.state.defs[this.state.selected];
+  titleForIndex(index: number): string {
+    if (index < 0) return '';
+    const def = this.appForIndex(index);
+    if (def === null) return '';
+    return def.app.name || '';
   }
-  get selectedArgs(): CT.AnyArgState[] {
-    // Handle no selection.
-    if (this.state.selected < 0) {
-      return [];
-    }
 
+  appForIndex(value: number): CT.AppDefinition | null {
+    if (value < 0) return null;
+    const count = this.state.defs.length;
+    if (value >= count) return null;
+
+    return this.state.defs[value] || null;
+  }
+
+  argsForIndex(value: number): CT.AnyArgState[] {
+    // Handle no selection.
+    if (value < 0) return [];
     // Handle out of bounds selections.
     const count = this.state.apps.length;
-    if (count === 0 || this.state.selected >= count) {
-      return [];
-    }
+    if (value >= count) return [];
 
-    return this.state.apps[this.state.selected].args;
+    return this.state.apps[value].args;
   }
 
   /** Converts the launch values to an output string array. */
@@ -258,14 +257,12 @@ class Launcher extends Component<LauncherProps, LauncherState> {
     return [this.state.defs[index].app.path].concat(args);
   }
 
-  get selectedOutput(): Array<string> {
-    if (!this.selectedApp) {
+  get selectedOutput(): string[] {
+    if (!this.appForIndex(this.state.selected)) {
       return ['No app selected.'];
     }
 
-    return [this.selectedApp.app.path].concat(
-      this.makeOutput(this.state.selected),
-    );
+    return this.makeOutput(this.state.selected);
   }
 
   handleFilesDropped(paths: string[]): void {
@@ -284,10 +281,17 @@ class Launcher extends Component<LauncherProps, LauncherState> {
 
   render() {
     const appDefs = this.state.defs.map<CT.App>((app) => app.app);
+    const selectedAppTitle = this.titleForIndex(this.state.selected);
+    const selectedApp = this.appForIndex(this.state.selected);
+    const selectedAppArgs = selectedApp ? selectedApp.args : [];
     return (
       <div className="app">
+        <TitleBar title={selectedAppTitle} />
         <section className="main">
           <section className="application-list">
+            <nav>
+              <h1>Applications</h1>
+            </nav>
             <ApplicationList
               definitions={appDefs}
               selected={this.state.selected}
@@ -305,15 +309,15 @@ class Launcher extends Component<LauncherProps, LauncherState> {
           <section className="argument-list">
             <nav>
               <h1>
-                {this.selectedApp
-                  ? this.selectedApp.app.name
+                {selectedAppTitle.length > 0
+                  ? selectedAppTitle
                   : 'No App Selected'}
               </h1>
               <button onClick={() => this.handleLaunchClick()}>Launch</button>
             </nav>
             <ArgumentList
-              definitions={this.selectedApp ? this.selectedApp.args : []}
-              values={this.selectedArgs}
+              definitions={selectedAppArgs}
+              values={this.argsForIndex(this.state.selected)}
               onArgChange={(value, index) => this.handleArgChange(value, index)}
               onArgPeek={(index) => this.handleArgPeek(index)}
             />

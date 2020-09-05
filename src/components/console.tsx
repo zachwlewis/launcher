@@ -81,11 +81,11 @@ export class Console extends Component<ConsoleProps, ConsoleState> {
     );
 
     return (
-      <section className="console">
+      <section className={consoleClass}>
         <span className="prompt" onClick={() => this.nextPrompt()}>
           {this.state.prompt}
         </span>
-        <code className={consoleClass}>{argList}</code>
+        <code>{argList}</code>
         <button
           className="expansion-toggle"
           onClick={() => this.handleExpansion()}

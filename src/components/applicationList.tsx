@@ -27,11 +27,6 @@ export class ApplicationList extends Component<ApplicationListProps> {
       />
     ));
 
-    return (
-      <section>
-        <h1>Applications</h1>
-        <ul className="application-list">{listItems}</ul>
-      </section>
-    );
+    return <ul className="application-list">{listItems}</ul>;
   }
 }

@@ -340,6 +340,81 @@
           "tooltip": "A option argument with custom values."
         }
       ]
+    },
+    {
+      "app": { "name": "Sample Application", "path": "/path/to/sample" },
+      "args": [
+        {
+          "type": "string",
+          "name": "String (Basic)",
+          "tooltip": "The most basic definition of a string argument."
+        },
+        {
+          "type": "option",
+          "name": "Option (Custom)",
+          "options": [
+            {
+              "name": "Off",
+              "value": ""
+            },
+            {
+              "name": "Display",
+              "value": "-log --verbose"
+            },
+            {
+              "name": "Standard",
+              "value": "-log"
+            },
+            {
+              "name": "Warning",
+              "value": "-log --warnings"
+            }
+          ],
+          "tooltip": "A option argument with custom values."
+        },
+        {
+          "type": "boolean",
+          "name": "Boolean (Values)",
+          "true": "--yep",
+          "false": "--nope",
+          "tooltip": "A boolean argument with specified values for true and false."
+        },
+        {
+          "type": "string",
+          "name": "String (Defaulted)",
+          "default": "default",
+          "tooltip": "A string argument with a default value."
+        },
+        {
+          "type": "boolean",
+          "name": "Boolean (Values)",
+          "true": "--yep",
+          "false": "--nope",
+          "tooltip": "A boolean argument with specified values for true and false."
+        },
+        {
+          "type": "boolean",
+          "name": "Boolean (Values)",
+          "true": "--yep",
+          "false": "--nope",
+          "tooltip": "A boolean argument with specified values for true and false."
+        },
+        {
+          "type": "string",
+          "name": "String (Pre & Post)",
+          "pre": "pre-",
+          "post": "-post",
+          "tooltip": "A string argument with a pre and post value."
+        },
+        {
+          "type": "number",
+          "name": "Number (Ignored)",
+          "pre": "pre-",
+          "post": "-post",
+          "ignored": [69, 420],
+          "tooltip": "A number argument with a pre and post value that's ignored if 69 or 420."
+        }
+      ]
     }
   ]
 }

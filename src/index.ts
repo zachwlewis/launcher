@@ -21,6 +21,8 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     height: 800,
     width: 600,
+    frame: false,
+    titleBarStyle: 'hiddenInset',
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
