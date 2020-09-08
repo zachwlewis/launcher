@@ -22,7 +22,8 @@ const createWindow = () => {
     height: 800,
     width: 600,
     frame: false,
-    titleBarStyle: 'hiddenInset',
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 5, y: 15 },
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
@@ -89,4 +90,14 @@ ipcMain.on('updateTitle', (event, arg) => {
 
 ipcMain.on('setUserTasks', (event, arg) => {
   tasks(arg);
+});
+
+ipcMain.on('closeWindow', (event, args) => {
+  const firstWindow = BrowserWindow.getAllWindows()[0];
+  if (firstWindow) firstWindow.close();
+});
+
+ipcMain.on('minimizeWindow', (event, args) => {
+  const firstWindow = BrowserWindow.getAllWindows()[0];
+  if (firstWindow) firstWindow.minimize();
 });
