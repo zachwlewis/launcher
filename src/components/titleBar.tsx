@@ -15,14 +15,18 @@ export const TitleBar = (props: TitleBarProps) => {
   const handleMinimizeClicked = () => {
     ipcRenderer.send('minimizeWindow');
   };
-  const title =
-    props.title.length > 0
-      ? `Launcher [${process.platform}] | ${props.title}`
-      : `Launcher [${process.platform}]`;
+  const currentAppLabel =
+    props.title.length > 0 ? (
+      <span className="application">{props.title}</span>
+    ) : (
+      ''
+    );
   if (process.platform === 'win32') {
     return (
       <nav id="title-bar">
-        <span>{title}</span>
+        <span className="launcher">Launcher</span>
+        <span className="platform">[{process.platform}]</span>
+        {currentAppLabel}
         <button title="Minimize" onClick={() => handleMinimizeClicked()}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +63,10 @@ export const TitleBar = (props: TitleBarProps) => {
     // Don't add special buttons for non-windows builds.
     return (
       <nav id="title-bar">
-        <span>{title}</span>
+        <span className="mac-spacer"></span>
+        <span className="launcher">Launcher</span>
+        <span className="platform">[{process.platform}]</span>
+        {currentAppLabel}
       </nav>
     );
   }
