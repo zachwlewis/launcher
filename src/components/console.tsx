@@ -40,11 +40,38 @@ export class Console extends Component<ConsoleProps, ConsoleState> {
     this.setState({ prompt: nextPrompt });
   }
 
+  /**
+   * Adds non-breaking hyphens and zero-width spaces
+   * to support pretty line wrapping for console output.
+   */
+  formatForDisplay(s: string): string {
+    return s
+      .replace(/-/g, '\u2011')
+      .replace(/\\/g, '\\\u200B')
+      .replace(/\//g, '/\u200B')
+      .replace(/=/g, '=\u200B');
+  }
+
+  /** Cleans added formatting characters. */
+  formatForClipboard(s: string): string {
+    return s.replace(/‑/g, '-').replace(/\u200B/g, '');
+  }
+
+  handleCopy(e: React.ClipboardEvent): void {
+    e.preventDefault();
+    if (!e.clipboardData) return;
+    const selection = document.getSelection() || '';
+    e.clipboardData.setData(
+      'text/plain',
+      this.formatForClipboard(selection.toString()),
+    );
+  }
+
   render() {
     const argList = this.props.args.map((arg, index) => (
       <span key={`out${index}`}>
         <span className={`arg${this.props.selected === index ? ' peek' : ''}`}>
-          {arg}
+          {this.formatForDisplay(arg)}
         </span>
         {arg.length !== 0 ? '\u0020' : ''}
       </span>
@@ -85,7 +112,7 @@ export class Console extends Component<ConsoleProps, ConsoleState> {
         <span className="prompt" onClick={() => this.nextPrompt()}>
           {this.state.prompt}
         </span>
-        <code>{argList}</code>
+        <code onCopy={(e) => this.handleCopy(e)}>{argList}</code>
         <button
           className="expansion-toggle"
           onClick={() => this.handleExpansion()}
