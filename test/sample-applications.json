@@ -1,118 +1,420 @@
 {
-    "applications": [
+  "definitions": [
+    {
+      "app": { "name": "String Arguments", "path": "/path/to/string" },
+      "args": [
         {
-            "name": "Sample One",
-            "path": "C:\\path\\to\\sample\\one.exe",
-            "args": [
-                {
-                    "name": "Hidden Argument",
-                    "type": "string",
-                    "default": "--not_visible_in_launcher",
-                    "display": "hidden"
-                },
-                {
-                    "name": "String Argument",
-                    "type": "string",
-                    "tooltip": "A basic string argument using pre and post values to wrap the input for display.",
-                    "pre": "--sample_string=\"",
-                    "post": "\"",
-                    "default": "Default Value"
-                },
-                {
-                    "name": "Sample Boolean",
-                    "type": "boolean",
-                    "tooltip": "A basic boolean argument displaying the boolean value as \"checked\" or \"unchecked\".",
-                    "pre": "--sample_boolean=",
-                    "values": [
-                        "unchecked",
-                        "checked"
-                    ],
-                    "default": false
-                },
-                {
-                    "name": "Sample Number",
-                    "type": "number",
-                    "tooltip": "A basic number argument with a range set to [0, 10].",
-                    "range": [0, 10],
-                    "step": 1,
-                    "pre": "--sample_number=",
-                    "default": 0
-                },
-                {
-                    "name": "Dropdown",
-                    "type": "option",
-                    "tooltip": "A basic dropdown.",
-                    "options": [
-                        ["Item One","value1"],
-                        ["Item Two","value2"],
-                        ["Item Three","value3"]
-                    ],
-                    "pre": "--sample_dropdown=",
-                    "default": 0
-                },
-                {
-                    "name": "Radio",
-                    "type": "option",
-                    "tooltip": "A basic radio selection.",
-                    "options": [
-                        ["Item One","value1"],
-                        ["Item Two","value2"],
-                        ["Item Three","value3"]
-                    ],
-                    "pre": "--sample_radio=",
-                    "default": 0
-                },
-                {
-                    "name": "Additional Arguments",
-                    "type": "string",
-                    "default": ""
-                }
-            ]
+          "type": "string",
+          "name": "String (Basic)",
+          "tooltip": "The most basic definition of a string argument."
         },
         {
-            "name": "Sample Two",
-            "path": "C:\\path\\to\\sample\\two.exe",
-            "args": [
-                {
-                    "name": "Hidden Argument",
-                    "type": "string",
-                    "default": "--not_visible_in_launcher",
-                    "display": "hidden"
-                },
-                {
-                    "name": "String Argument",
-                    "type": "string",
-                    "tooltip": "A string argument that is ignored from output when the value is \"ignore\".",
-                    "pre": "--sample_string=\"",
-                    "post": "\"",
-                    "ignoreIfMatches": "ignore",
-                    "default": "Default Value"
-                },
-                {
-                    "name": "Sample Boolean",
-                    "type": "boolean",
-                    "tooltip": "A boolean argument that is ignored from output when the value is true.",
-                    "pre": "--sample_boolean=",
-                    "values": ["unchecked", "checked"],
-                    "ignoreIfMatches": true,
-                    "default": false
-                },
-                {
-                    "name": "Sample Number",
-                    "type": "number",
-                    "tooltip": "A number argument that is ignored from output when the value is 69 (nice) or 420 (nice).",
-                    "range": [0, 1000],
-                    "step": 1,
-                    "pre": "--sample_number=",
-                    "ignoreIfMatches": [69, 420],
-                    "default": 0
-                },
-                {
-                    "name": "Additional Arguments",
-                    "type": "string",
-                    "default": ""
-                }
-            ]
+          "type": "string",
+          "name": "String (Hidden)",
+          "tooltip": "This string will be added, but isn't shown.",
+          "default": "--hidden-arg",
+          "display": "hidden"
+        },
+        {
+          "type": "string",
+          "name": "String (Read-only)",
+          "tooltip": "This string can't be edited.",
+          "default": "--readonly-arg",
+          "display": "readonly"
+        },
+        {
+          "type": "string",
+          "name": "String (Defaulted)",
+          "default": "default",
+          "tooltip": "A string argument with a default value."
+        },
+        {
+          "type": "string",
+          "name": "String (Pre & Post)",
+          "pre": "pre-",
+          "post": "-post",
+          "tooltip": "A string argument with a pre and post value."
+        },
+        {
+          "type": "string",
+          "name": "String (Ignored)",
+          "pre": "pre-",
+          "post": "-post",
+          "ignored": ["", "hello world"],
+          "tooltip": "A string argument with a pre and post value that's ignored if blank or \"hello world\"."
         }
-    ]
+      ]
+    },
+    {
+      "app": { "name": "Boolean Arguments", "path": "/path/to/boolean" },
+      "args": [
+        {
+          "type": "boolean",
+          "name": "Boolean (Basic)",
+          "true": "true",
+          "false": "false",
+          "tooltip": "The most basic definition of a boolean argument."
+        },
+        {
+          "type": "boolean",
+          "name": "Boolean (Defaulted)",
+          "true": "true",
+          "false": "false",
+          "default": true,
+          "tooltip": "A boolean argument with a default value of true."
+        },
+        {
+          "type": "boolean",
+          "name": "Boolean (Read-only)",
+          "true": "true",
+          "false": "false",
+          "default": true,
+          "tooltip": "A boolean argument that can't be changed.",
+          "display": "readonly"
+        },
+        {
+          "type": "boolean",
+          "name": "Boolean (Pre & Post)",
+          "true": "true",
+          "false": "false",
+          "pre": "pre-",
+          "post": "-post",
+          "tooltip": "A boolean argument with a pre and post value."
+        },
+        {
+          "type": "boolean",
+          "name": "Boolean (Values)",
+          "true": "--yep",
+          "false": "--nope",
+          "tooltip": "A boolean argument with specified values for true and false."
+        }
+      ]
+    },
+    {
+      "app": { "name": "Number Argument", "path": "/path/to/number" },
+      "args": [
+        {
+          "type": "number",
+          "name": "Number (Basic)",
+          "tooltip": "The most basic definition of a number argument."
+        },
+        {
+          "type": "number",
+          "name": "Number (Hidden)",
+          "default": 420.69,
+          "tooltip": "A hidden number argument with a default value.",
+          "display": "hidden",
+          "pre": "--hidden="
+        },
+        {
+          "type": "number",
+          "name": "Number (Defaulted)",
+          "default": 420,
+          "tooltip": "A number argument with a default value."
+        },
+        {
+          "type": "number",
+          "name": "Number (Read-only)",
+          "default": 69,
+          "tooltip": "A number argument that can't be changed.",
+          "display": "readonly",
+          "pre": "--readonly="
+        },
+        {
+          "type": "number",
+          "name": "Number (Integer)",
+          "default": 69,
+          "tooltip": "An integer number argument.",
+          "pre": "--int=",
+          "format": "integer"
+        },
+        {
+          "type": "number",
+          "name": "Number (Pre & Post)",
+          "pre": "pre-",
+          "post": "-post",
+          "tooltip": "A number argument with a pre and post value."
+        },
+        {
+          "type": "number",
+          "name": "Number (Ignored)",
+          "pre": "pre-",
+          "post": "-post",
+          "ignored": [69, 420],
+          "tooltip": "A number argument with a pre and post value that's ignored if 69 or 420."
+        },
+        {
+          "type": "number",
+          "name": "Number (Radix)",
+          "radix": 16,
+          "tooltip": "A number argument with a custom radix of 16."
+        },
+        {
+          "type": "number",
+          "name": "Number (Range)",
+          "minimum": 100,
+          "maximum": 200,
+          "tooltip": "A number argument between 100 and 200."
+        },
+        {
+          "type": "number",
+          "name": "Number (Step)",
+          "step": 5,
+          "tooltip": "A number argument with a custom step of 5."
+        }
+      ]
+    },
+    {
+      "app": { "name": "Option Argument", "path": "/path/to/option" },
+      "args": [
+        {
+          "type": "option",
+          "name": "Option (Basic)",
+          "options": [
+            {
+              "name": "Option 1",
+              "value": "value_1"
+            },
+            {
+              "name": "Option 2",
+              "value": "value_2"
+            },
+            {
+              "name": "Option 3",
+              "value": "value_3"
+            },
+            {
+              "name": "Option 4",
+              "value": "value_4"
+            }
+          ],
+          "tooltip": "The most basic definition of a option argument."
+        },
+        {
+          "type": "option",
+          "name": "Option (Defaulted)",
+          "options": [
+            {
+              "name": "Option 1",
+              "value": "value_1"
+            },
+            {
+              "name": "Option 2",
+              "value": "value_2"
+            },
+            {
+              "name": "Option 3",
+              "value": "value_3"
+            },
+            {
+              "name": "Option 4",
+              "value": "value_4"
+            }
+          ],
+          "default": "value_3",
+          "tooltip": "A option argument with a default value."
+        },
+        {
+          "type": "option",
+          "name": "Option (Hidden)",
+          "options": [
+            {
+              "name": "Option 1",
+              "value": "value_1"
+            },
+            {
+              "name": "Option 2",
+              "value": "value_2"
+            },
+            {
+              "name": "Option 3",
+              "value": "value_3"
+            },
+            {
+              "name": "Option 4",
+              "value": "value_4"
+            }
+          ],
+          "pre": "--hidden=",
+          "default": "value_3",
+          "display": "hidden",
+          "tooltip": "A hidden option argument with a default value."
+        },
+        {
+          "type": "option",
+          "name": "Option (Read-only)",
+          "options": [
+            {
+              "name": "Option 1",
+              "value": "value_1"
+            },
+            {
+              "name": "Option 2",
+              "value": "value_2"
+            },
+            {
+              "name": "Option 3",
+              "value": "value_3"
+            },
+            {
+              "name": "Option 4",
+              "value": "value_4"
+            }
+          ],
+          "pre": "--readonly=",
+          "default": "value_3",
+          "display": "readonly",
+          "tooltip": "A readonly option argument with a default value."
+        },
+        {
+          "type": "option",
+          "name": "Option (Pre & Post)",
+          "options": [
+            {
+              "name": "Option 1",
+              "value": "value_1"
+            },
+            {
+              "name": "Option 2",
+              "value": "value_2"
+            },
+            {
+              "name": "Option 3",
+              "value": "value_3"
+            },
+            {
+              "name": "Option 4",
+              "value": "value_4"
+            }
+          ],
+          "pre": "pre-",
+          "post": "-post",
+          "tooltip": "A option argument with a pre and post value."
+        },
+        {
+          "type": "option",
+          "name": "Option (Ignored)",
+          "options": [
+            {
+              "name": "Option 1",
+              "value": "--allowed1"
+            },
+            {
+              "name": "Option 2",
+              "value": "--ignored2"
+            },
+            {
+              "name": "Option 3",
+              "value": "--allowed3"
+            },
+            {
+              "name": "Option 4",
+              "value": "--ignored4"
+            }
+          ],
+          "post": "=shown",
+          "ignored": ["--ignored2", "--ignored4"],
+          "tooltip": "A option argument that's ignored if Option 2 or Option 4."
+        },
+        {
+          "type": "option",
+          "name": "Option (Custom)",
+          "options": [
+            {
+              "name": "Off",
+              "value": ""
+            },
+            {
+              "name": "Display",
+              "value": "-log --verbose"
+            },
+            {
+              "name": "Standard",
+              "value": "-log"
+            },
+            {
+              "name": "Warning",
+              "value": "-log --warnings"
+            }
+          ],
+          "tooltip": "A option argument with custom values."
+        }
+      ]
+    },
+    {
+      "app": { "name": "Sample Application", "path": "/path/to/sample" },
+      "args": [
+        {
+          "type": "string",
+          "name": "String (Basic)",
+          "tooltip": "The most basic definition of a string argument."
+        },
+        {
+          "type": "option",
+          "name": "Option (Custom)",
+          "options": [
+            {
+              "name": "Off",
+              "value": ""
+            },
+            {
+              "name": "Display",
+              "value": "-log --verbose"
+            },
+            {
+              "name": "Standard",
+              "value": "-log"
+            },
+            {
+              "name": "Warning",
+              "value": "-log --warnings"
+            }
+          ],
+          "tooltip": "A option argument with custom values."
+        },
+        {
+          "type": "boolean",
+          "name": "Boolean (Values)",
+          "true": "--yep",
+          "false": "--nope",
+          "tooltip": "A boolean argument with specified values for true and false."
+        },
+        {
+          "type": "string",
+          "name": "String (Defaulted)",
+          "default": "default",
+          "tooltip": "A string argument with a default value."
+        },
+        {
+          "type": "boolean",
+          "name": "Boolean (Values)",
+          "true": "--yep",
+          "false": "--nope",
+          "tooltip": "A boolean argument with specified values for true and false."
+        },
+        {
+          "type": "boolean",
+          "name": "Boolean (Values)",
+          "true": "--yep",
+          "false": "--nope",
+          "tooltip": "A boolean argument with specified values for true and false."
+        },
+        {
+          "type": "string",
+          "name": "String (Pre & Post)",
+          "pre": "pre-",
+          "post": "-post",
+          "tooltip": "A string argument with a pre and post value."
+        },
+        {
+          "type": "number",
+          "name": "Number (Ignored)",
+          "pre": "pre-",
+          "post": "-post",
+          "ignored": [69, 420],
+          "tooltip": "A number argument with a pre and post value that's ignored if 69 or 420."
+        }
+      ]
+    }
+  ]
 }

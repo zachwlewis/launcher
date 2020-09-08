@@ -1,0 +1,96 @@
+:root {
+  --console-background: #111111;
+  --console-foreground: #dddddd;
+  --application-list-background: #fafafa;
+  --argument-list-background: #ffffff;
+  --monospaced-font: 'Cascadia Mono';
+  --default-font: 'Segoe UI', 'Neue Helvetica', Tahoma, Geneva, Verdana,
+    sans-serif;
+  font-family: var(--default-font);
+  font-size: 14px;
+}
+
+body {
+  background: var(--argument-list-background);
+  margin: 0;
+  padding: 0;
+  font-family: var(--default-font);
+}
+
+div.app {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+section.main {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+section.argument-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  background-color: var(--argument-list-background);
+}
+
+section.argument-list nav {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: var(--argument-list-background);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.argument-list nav > * {
+  flex: 0 0 auto;
+}
+.argument-list nav > *:first-child {
+  flex: 1 0 auto;
+}
+
+.argument-list nav > *:last-child {
+  margin-right: 0.5rem;
+}
+
+section.application-list {
+  flex: 0 0 250px;
+  overflow-y: auto;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-flow: column nowrap;
+  background-color: var(--application-list-background);
+}
+
+section.application-list > *:last-child {
+  margin-top: auto;
+}
+
+section.application-list nav {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  background-color: var(--application-list-background);
+  z-index: 1000;
+}
+
+section.console {
+  flex: 0 0 auto;
+  padding: 0.5rem;
+  background: var(--console-background);
+  color: var(--console-foreground);
+}
+
+h1 {
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+}

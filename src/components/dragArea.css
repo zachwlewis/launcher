@@ -1,0 +1,16 @@
+.dragArea {
+  margin: 0.5rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 2px dashed gainsboro;
+  text-align: center;
+}
+
+.dragArea * {
+  pointer-events: none;
+}
+
+.dragArea.dragging {
+  background-color: gainsboro;
+  border-color: gray;
+}

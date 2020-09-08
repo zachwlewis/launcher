@@ -13,10 +13,10 @@ rules.push({
       loader: 'file-loader',
       options: {
         name: '[name].[ext]',
-        outputPath: 'fonts/'
-      }
-    }
-  ]
+        outputPath: 'fonts/',
+      },
+    },
+  ],
 });
 
 module.exports = {
@@ -25,6 +25,6 @@ module.exports = {
   },
   plugins: plugins,
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css']
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
   },
 };

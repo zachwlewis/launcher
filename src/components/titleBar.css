@@ -1,0 +1,80 @@
+:root {
+  --titlebar-background: #0e101d;
+  --titlebar-foreground: #dddddd;
+  --titlebar-close: #d42f2f;
+}
+
+.platform {
+  opacity: 0.6;
+}
+
+nav#title-bar {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: var(--titlebar-background);
+  color: var(--titlebar-foreground);
+  padding: 0;
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
+  display: flex;
+  align-items: center;
+  height: 30px;
+}
+
+#title-bar span {
+  margin-left: 0.25rem;
+}
+
+#title-bar span.application {
+  flex: 1;
+  text-align: center;
+}
+
+#title-bar span.mac-spacer {
+  flex: 0 0 60px;
+}
+
+#title-bar button {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  opacity: 0.2;
+  padding: auto;
+  outline: none;
+  flex: 0 0 30px;
+  width: 30px;
+  margin: 0;
+  -webkit-app-region: no-drag;
+  height: 30px;
+}
+#title-bar button.spacer {
+  opacity: 0;
+}
+
+#title-bar button > svg {
+  color: var(--titlebar-foreground);
+}
+
+#title-bar button:hover > svg {
+  color: var(--titlebar-background);
+}
+
+#title-bar button:hover {
+  opacity: 0.8;
+  background-color: var(--titlebar-foreground);
+}
+
+#title-bar button:active {
+  opacity: 1;
+}
+
+#title-bar button.close:hover {
+  background-color: var(--titlebar-close);
+}
+
+#title-bar button svg {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+}

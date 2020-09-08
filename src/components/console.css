@@ -1,0 +1,59 @@
+section.console {
+  display: flex;
+  font-size: 1rem;
+  font-family: var(--monospaced-font);
+}
+
+section.console.collapsed {
+  line-height: 1rem;
+  align-items: center;
+}
+
+section.console.expanded {
+  line-height: 1.6rem;
+  align-items: baseline;
+}
+
+section.console code {
+  flex: 1 0 0;
+}
+
+section.console.collapsed code {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.prompt {
+  opacity: 0.5;
+  user-select: none;
+  margin-right: 0.5rem;
+  flex: 0;
+}
+
+.prompt:hover {
+  opacity: 0.7;
+}
+
+.expansion-toggle {
+  flex: 0;
+  padding: 0px;
+  line-height: 0;
+  margin-left: 0.5rem;
+  align-self: flex-end;
+}
+
+.expansion-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+section.console code > span > span {
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.peek {
+  background-color: yellow;
+  color: var(--console-background);
+}

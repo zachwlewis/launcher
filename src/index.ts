@@ -3,21 +3,32 @@ import { exec } from 'child_process';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
+if (require('electron-squirrel-startup')) {
+  // eslint-disable-line global-require
   app.quit();
 }
+
+const tasks = (t: Electron.Task[]) => {
+  if (process.platform === 'win32') {
+    app.setUserTasks(t);
+  }
+};
+
+tasks([]);
 
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 400,
+    height: 800,
     width: 600,
+    frame: false,
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 5, y: 15 },
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
     },
   });
-
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
@@ -52,22 +63,41 @@ app.on('activate', () => {
 // code. You can also put them in separate files and import them here.
 
 ipcMain.on('launch', (event, args: string[]) => {
-  
-  if (process.platform === "darwin") {
+  // #TODO: Do we want to support lots of spaces in arguments?
+  // Probably, right?
+  const launchString = args
+    .join(' ')
+    .trim()
+    .replace(/\s{2,}/g, ' ');
+
+  if (process.platform === 'darwin') {
     // Not designed for Mac, but want to build and test.
-    console.log(`Launch => ${args.join(' ')}`);
+    console.log(`Launch => ${launchString}`);
     return;
   }
 
   // #TODO: Provide support for launching scripts in a desired shell.
-  console.log(`exec(${args.join(' ')})`);
-  const child = exec(args.join(' '));
+  console.log(`exec(${launchString})`);
+  const child = exec(launchString);
 
   // #TODO: Consider maintaining a reference to the process to quit later if desired.
   child.unref();
-
 });
 
 ipcMain.on('updateTitle', (event, arg) => {
   BrowserWindow.getAllWindows()[0].setTitle(`${arg} | Launcher`);
-})
+});
+
+ipcMain.on('setUserTasks', (event, arg) => {
+  tasks(arg);
+});
+
+ipcMain.on('closeWindow', (event, args) => {
+  const firstWindow = BrowserWindow.getAllWindows()[0];
+  if (firstWindow) firstWindow.close();
+});
+
+ipcMain.on('minimizeWindow', (event, args) => {
+  const firstWindow = BrowserWindow.getAllWindows()[0];
+  if (firstWindow) firstWindow.minimize();
+});

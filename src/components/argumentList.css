@@ -1,0 +1,63 @@
+ol.argument-list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-flow: row wrap;
+  list-style-type: none;
+}
+
+ol.argument-list li {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0.5rem;
+  cursor: pointer;
+  flex: 1 1 250px;
+}
+
+ol.argument-list li.boolean {
+  flex-direction: row;
+}
+
+ol.argument-list li.hidden {
+  display: none;
+}
+
+ol.argument-list li.error {
+  font-family: var(--monospaced-font);
+  background: red;
+  color: white;
+}
+
+ol.argument-list li.selected {
+  background-color: yellow;
+}
+
+ol.argument-list li > label {
+  flex: 1 0;
+}
+
+ol.argument-list li.string > label,
+ol.argument-list li.number > label,
+ol.argument-list li.option > label {
+  margin-bottom: 0.5rem;
+}
+
+ol.argument-list li > input[type='checkbox'] {
+  flex: 0;
+}
+
+ol.argument-list li > input[type='number'] {
+  font-family: var(--monospaced-font);
+}
+
+ol.argument-list li > input[type='text'],
+ol.argument-list li > select {
+  font-family: var(--default-font);
+}
+
+ol.argument-list li > input[type='number'],
+ol.argument-list li > input[type='text'],
+ol.argument-list li > select {
+  padding: 0.25rem;
+}
